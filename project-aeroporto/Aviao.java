@@ -33,8 +33,13 @@ public class Aviao {
             }
         }
                 System.out.println("Sem espaço para tripulantes");
-
-
     }
 
+    void setDisponivel(boolean disponivel){
+        this.disponivel = disponivel;
+    }
+
+    public boolean isDisponivel() {
+        return disponivel;
+    }
 }

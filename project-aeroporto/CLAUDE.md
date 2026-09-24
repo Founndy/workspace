@@ -91,7 +91,7 @@ Decisões em aberto no `Voo` (do usuário, sem bug):
 Plano do `Voo` (guiar passo a passo; o usuário implementa):
 1. ~~Atributos e construtor~~ (feito).
 2. ~~Getters/setters com validação~~ (feito, com as decisões em aberto acima).
-3. **Passo em que paramos:** `alocarAviao` (perguntas lançadas: o que recebe, o que faz com `aviao`, o que fazer com `null`), depois `alocarTripulante`, `alocarTripulante` (no máx. 1 piloto e 1 copiloto), verificação de tripulação completa (1 piloto, 1 copiloto, ≥ 1 comissário).
+3. ~~`alocarAviao`~~ (feito: 4 cláusulas de guarda com `return` — já tem avião, status ≠ `PLANEJADO`, `null`, `!isDisponivel()` — nessa ordem para não dar `NullPointerException`; marca `setDisponivel(false)`. `setAviao` removido por ser porta dos fundos. `Aviao` ganhou `isDisponivel()`). **Passo em que paramos:** `alocarTripulante` (primeira versão escrita; `instanceof` já explicado com exemplo de animais). Bugs apontados, o usuário ainda vai corrigir: guardas de `null`/status/duplicado sem `return`; `Piloto || Copiloto` junto faz um copiloto ser recusado por já existir piloto; `Comissario` nunca é alocado; loop de alocação sem `return` preenche as 10 posições com o mesmo tripulante; falta mensagem de "sem espaço". Depois: `alocarTripulante`, `alocarTripulante` (no máx. 1 piloto e 1 copiloto), verificação de tripulação completa (1 piloto, 1 copiloto, ≥ 1 comissário).
 4. Embarque/desembarque delegando aos assentos do `Aviao`.
 5. Troca de status com regras (ex.: não sair do solo sem avião e tripulação completa; cancelado não muda).
 6. `OperacaoVoo` / `Decolagem` / `Pouso` e troca de estratégia no `Voo`.
