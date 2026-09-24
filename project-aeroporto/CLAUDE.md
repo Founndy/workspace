@@ -43,7 +43,7 @@ Sem pacotes; todos os `.java` ficam na raiz da pasta (o `.iml` marca a raiz como
 - `Pessoa` → base (nome, cpf, `anunciar()`); `Passageiro` (passaporte) e `Tripulante` (titulo) herdam dela.
 - `Tripulante` → `Piloto`, `Copiloto`, `Comissario`.
 - `Aviao` → assentos (`Passageiro[50]`), `adicionarPessoa`, `adicionarTripulante`.
-- `Voo` → ainda no esqueleto original (ver "Estado atual").
+- `Voo` → atributos, construtor, getters e setters prontos (passos 1 e 2 do plano); falta comportamento (ver "Estado atual").
 - `StatusVoo` → enum com os 8 status do enunciado.
 - `Main` → `public static void main` tradicional, só um `println` por enquanto.
 - `Diagrama Aeroporto.drawio` → diagrama UML do usuário (abre em app.diagrams.net).
@@ -66,6 +66,14 @@ Bugs já corrigidos pelo usuário:
 - `Aviao.adicionarPessoa`: sem loop desnecessário, checa limites (`>= 0` e `< length`) antes de acessar o array (curto-circuito do `&&`), impede o mesmo passageiro em dois assentos.
 - `Aviao.adicionarTripulante`: `return` ao alocar e mensagem "sem espaço" só depois do loop.
 
+`Voo`, passos 1 e 2 (feitos pelo usuário):
+- Atributos `private`: `codVoo`, `aeroSaida`, `aeroEntrada`, `StatusVoo estadoAtual`, `Aviao aviao` (sem `new`, começa `null`), `Tripulante[] tripulante = new Tripulante[10]`.
+- `Tripulante[10]` é decisão do usuário: capacidade para mais comissários. A regra do enunciado (1 piloto, 1 copiloto, ≥ 1 comissário) deve ser garantida pelos métodos, não pelo tamanho do array. Não criar classes fora do enunciado (ex.: "administração").
+- Construtor recebe código/origem/destino, chama os setters (validação) e começa em `StatusVoo.PLANEJADO`.
+- Getters de tudo; setters de código/origem/destino validam `!= null && !isBlank()`; `setEstadoAtual` sem regras.
+- Conceitos explicados nesta etapa: uso de enum (tipo vs. nome da variável, `Tipo.VALOR`), modificador de acesso não vale em variável local, `void` não devolve valor (setter já atribui), atributo objeto sem atribuição = `null`.
+- `Main`: cria um `Aviao` e um array `Passageiro[15]` (lista para a demonstração, não são os assentos).
+
 ## Estado atual e próximos passos
 
 Pendências apontadas no último review (o usuário ainda não corrigiu):
@@ -75,10 +83,15 @@ Pendências apontadas no último review (o usuário ainda não corrigiu):
 4. `Pessoa` e `Tripulante` devem ser `abstract` (enunciado).
 5. Tripulação ainda está no `Aviao` — sai de lá quando o `Voo` for feito.
 
+Decisões em aberto no `Voo` (do usuário, sem bug):
+- Valor inválido: ignorar em silêncio ou lançar `IllegalArgumentException`? Hoje `new Voo(null, "GRU", "GIG")` cria voo com `codVoo` `null` sem aviso (mesma questão da `Pessoa`).
+- `setEstadoAtual` livre (aceita `null`, `CANCELADO` → `EM_ROTA`) vs. método com regras — resolver no passo 5.
+- Quais atributos podem mudar depois de criado; métodos sem modificador (package-private) vs. `public`.
+
 Plano do `Voo` (guiar passo a passo; o usuário implementa):
-1. **Atributos e construtor** (passo em que paramos): `private` código, origem, destino, `StatusVoo status`, `Aviao aviao` (começa `null`), `Tripulante[] tripulantes`. Construtor recebe código/origem/destino; status começa `PLANEJADO`.
-2. Getters/setters com validação.
-3. `alocarAviao`, `alocarTripulante` (no máx. 1 piloto e 1 copiloto), verificação de tripulação completa (1 piloto, 1 copiloto, ≥ 1 comissário).
+1. ~~Atributos e construtor~~ (feito).
+2. ~~Getters/setters com validação~~ (feito, com as decisões em aberto acima).
+3. **Passo em que paramos:** `alocarAviao` (perguntas lançadas: o que recebe, o que faz com `aviao`, o que fazer com `null`), depois `alocarTripulante`, `alocarTripulante` (no máx. 1 piloto e 1 copiloto), verificação de tripulação completa (1 piloto, 1 copiloto, ≥ 1 comissário).
 4. Embarque/desembarque delegando aos assentos do `Aviao`.
 5. Troca de status com regras (ex.: não sair do solo sem avião e tripulação completa; cancelado não muda).
 6. `OperacaoVoo` / `Decolagem` / `Pouso` e troca de estratégia no `Voo`.

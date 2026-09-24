@@ -1,17 +1,58 @@
 public class Voo {
     private String codVoo;
-    private String nomeVoo;  //normalmente o nome é a cidade de chega.
-    private String enderecoSaida;
-    private String enderecoChegada;
-    private String statusVoo;
+    private String aeroSaida;
+    private String aeroEntrada;
+    private StatusVoo estadoAtual;
+    private Aviao aviao;
+
+    private Tripulante[] tripulante = new Tripulante[10];
 
 
-    Tripulante[] tripulante = new Tripulante[10];
-    Aviao aviao = new Aviao();
-    Passageiro[] passageiro = new Passageiro[50];
+    Voo(String codVoo, String aeroSaida, String aeroEntrada) {
+        setCodVoo(codVoo);
+        setAeroSaida(aeroSaida);
+        setAeroEntrada(aeroEntrada);
+        this.estadoAtual = StatusVoo.PLANEJADO;
 
-    Voo(){
-        statusVoo = "Planejado";
     }
+
+    String getCodVoo() {
+        return codVoo;
+    }
+    String getAeroSaida() {
+        return aeroSaida;
+    }
+
+    String getAeroEntrada() {
+        return aeroEntrada;
+    }
+
+    StatusVoo getEstadoAtual() {
+        return estadoAtual;
+    }
+
+    void setEstadoAtual(StatusVoo estadoAtual) {
+        this.estadoAtual = estadoAtual;
+    }
+
+    void setCodVoo(String codVoo) {
+        if(codVoo != null && !codVoo.isBlank()) {
+            this.codVoo = codVoo;
+        }
+    }
+
+    void setAeroSaida(String aeroSaida) {
+        if(aeroSaida != null && !aeroSaida.isBlank()) {
+            this.aeroSaida = aeroSaida;
+        }
+    }
+
+
+    void setAeroEntrada(String aeroEntrada) {
+        if(aeroEntrada != null && !aeroEntrada.isBlank()) {
+            this.aeroEntrada = aeroEntrada;
+        }
+    }
+
 
 }
