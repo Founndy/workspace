@@ -1,0 +1,23 @@
+.env
+*.env
+__pycache__/
+*.pyc
+venv/
+.venv/
+node_modules/
+dist/
+build/
+bin/
+obj/
+*.log
+*.exe
+*.dll
+*.zip
+
+# IDE e saídas de compilação (IntelliJ / CLion)
+.idea/
+out/
+output/
+cmake-build-*/
+*.class
+*.obj
