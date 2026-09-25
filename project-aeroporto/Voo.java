@@ -84,37 +84,56 @@ public class Voo {
     void alocarTripulante(Tripulante tripulante) {
         if (tripulante == null) {
             System.out.println("Tripulante invalido!");
+            return;
         }
         if (StatusVoo.PLANEJADO != this.estadoAtual) {
             System.out.println("Voo indisponivel ou cancelado!");
+            return;
         }
         for (int i = 0; i < tripulantes.length; i++) {
             if (tripulante == tripulantes[i]) {
                 System.out.println("Tripulante ja alocado!");
+                return;
+            }
+        }
+        if (tripulante instanceof Comissario) {
+            for (int i = 0; i < tripulantes.length; i++) {
+                if (tripulantes[i] == null) {
+                    tripulantes[i] = tripulante;
+                    System.out.println("Tripulante alocado com sucesso!");
+                    return;
+                }
+
             }
         }
         if (tripulante instanceof Piloto || tripulante instanceof Copiloto) {
-            for (int i = 0; i < tripulantes.length; i++) {
-                if (tripulantes[i] instanceof Piloto) {
-                    System.out.println("Piloto ja alocado!");
-                    return;
+            if (tripulante instanceof Piloto) {
+                for (int i = 0; i < tripulantes.length; i++) {
+                    if (tripulantes[i] instanceof Piloto) {
+                        System.out.println("Piloto ja alocado!");
+                        return;
+                    }
+                }
+            }
+            if(tripulante instanceof Copiloto) {
+                for (int i = 0; i < tripulantes.length; i++) {
+                    if (tripulantes[i] instanceof Copiloto) {
+                        System.out.println("Copiloto ja alocado!");
+                        return;
+                    }
                 }
             }
             for (int i = 0; i < tripulantes.length; i++) {
-                if (tripulantes[i] instanceof Copiloto) {
-                    System.out.println("Copiloto ja alocado!");
-                    return;
-                }
-            }
-            for (int i = 0; i < tripulantes.length; i++) {
-                if(tripulantes[i] == null){
+                if (tripulantes[i] == null) {
                     tripulantes[i] = tripulante;
+                    System.out.println("Tripulante alocado com sucesso!");
+                    return;
                 }
-                System.out.println("Tripulante alocado com sucesso!");
-            }
-            
-        }
 
+            }
+
+        }
+        System.out.println("Vagas indisponivel para Tripulantes.");
     }
 }
 
