@@ -57,6 +57,7 @@ public class Voo {
 
     void alocarAviao(Aviao aviao) {
 
+
         if (this.aviao != null) {
             System.out.println("Avião já alocado!");
             return;
@@ -80,7 +81,6 @@ public class Voo {
         System.out.println("Aviao alocado");
 
     }
-
     void alocarTripulante(Tripulante tripulante) {
         if (tripulante == null) {
             System.out.println("Tripulante invalido!");
@@ -133,8 +133,27 @@ public class Voo {
             }
 
         }
+
         System.out.println("Vagas indisponivel para Tripulantes.");
     }
-}
+
+    boolean requisitosAlcancado(){
+       int count_comisario = 0, count_copiloto = 0, count_piloto = 0;
+        for(int i = 0; i < tripulantes.length;i++) {
+            if (tripulantes[i] instanceof Piloto) {
+                count_piloto++;
+            }
+            if (tripulantes[i] instanceof Copiloto) {
+                count_copiloto++;
+            }
+            if (tripulantes[i] instanceof Comissario) {
+                count_comisario++;
+            }
+        }
+               return count_copiloto == 1 && count_comisario >= 1 && count_piloto == 1;
+        }
+    }
+
+
 
 
