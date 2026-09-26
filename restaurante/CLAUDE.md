@@ -2,6 +2,10 @@
 
 Exercício de POO em Java (faculdade): modelagem de um restaurante com clientes, garçons, telefonista, pedidos, pratos, cardápio e regiões.
 
+## Sobre a disciplina
+
+Exercício de estudo da disciplina de **Programação Orientada a Objetos (POO)**, feito em Java para praticar modelagem de classes e os pilares da matéria: encapsulamento, herança (`Pessoa` → `Cliente`, `Garcom`, `Telefonista`), sobrecarga de construtores e associação entre objetos (`Pedido` ligando cliente, atendente e prato). O enunciado original não está no repositório.
+
 ## Regras de trabalho
 
 Siga as regras do `CLAUDE.md` da raiz: atue como **professor**, não implemente código.

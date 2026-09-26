@@ -2,6 +2,10 @@
 
 Exercício simples de POO em Java (faculdade): classe `Livro` com título, autor, ISBN e disponibilidade, e métodos de empréstimo/devolução.
 
+## Sobre a disciplina
+
+Exercício de estudo da disciplina de **Programação Orientada a Objetos (POO)**, feito em Java para praticar os conceitos básicos da matéria: classes e objetos, atributos privados, construtores, getters e métodos que alteram o estado do objeto (encapsulamento). O enunciado original não está no repositório.
+
 ## Regras de trabalho
 
 Siga as regras do `CLAUDE.md` da raiz: atue como **professor**, não implemente código.
