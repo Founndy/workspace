@@ -32,10 +32,6 @@ public class Voo {
         return estadoAtual;
     }
 
-    void setEstadoAtual(StatusVoo estadoAtual) {
-        this.estadoAtual = estadoAtual;
-    }
-
     void setCodVoo(String codVoo) {
         if (codVoo != null && !codVoo.isBlank()) {
             this.codVoo = codVoo;
@@ -193,6 +189,43 @@ public class Voo {
         }
 
             return count_permissao > 0;
+    }
+
+    /*São 8 status:
+
+planejado
+em solo
+taxiando
+decolado
+em rota
+em aproximação
+pousado
+cancelado
+*/
+    void setEstadoAtual(StatusVoo estadoAtual){
+        if(this.aviao == null){
+            System.out.println("Avião invalido!");
+            return;
+        }
+        if(requisitosAlcancado()){
+            System.out.println("requisitos de tripulação não alcaçados!");
+            return;
+        }
+
+
+    }
+
+    boolean allowDecolagem(Aviao aviao,StatusVoo estadoAtual){
+        int count_passageiro = 0;
+        for(int i = 0; i < 50;i++){
+            if(aviao.assentos[i] != null){
+                count_passageiro++;
+            }
+        }
+        if(count_passageiro < 0.75*50){
+            System.out.println("Quantidade de pessoas insuficientes!");
+            return false;
+        }
     }
 
 
