@@ -24,6 +24,20 @@ public class Aviao {
             }
     }
 
+    void removerPessoa(int assento){
+
+        if(assento < 0 || assento > assentos.length - 1){
+            System.out.println("assento invalido!");
+            return;
+        }
+        if(assentos[assento] == null){
+            System.out.println("assento ja desucupado!");
+            return;
+        }
+        assentos[assento] = null;
+        System.out.println("Passageiro removido!");
+    }
+
     public void adicionarTripulante(Tripulante tripulante){
         for(int i = 0; i < tripulantes.length;i++) {
             if (tripulantes[i] == null) {

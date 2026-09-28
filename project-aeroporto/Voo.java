@@ -136,7 +136,6 @@ public class Voo {
 
         System.out.println("Vagas indisponivel para Tripulantes.");
     }
-
     boolean requisitosAlcancado(){
        int count_comisario = 0, count_copiloto = 0, count_piloto = 0;
         for(int i = 0; i < tripulantes.length;i++) {
@@ -152,7 +151,53 @@ public class Voo {
         }
                return count_copiloto == 1 && count_comisario >= 1 && count_piloto == 1;
         }
+
+    void embarcar(Passageiro passageiro, int assento){
+        if(this.aviao == null){
+            System.out.println("avião invalido!");
+            return;
+        }
+        if(StatusVoo.EM_SOLO != this.estadoAtual){
+            System.out.println("Status diferente de EM SOLO, Impossivel embarcar!");
+            return;
+        }
+        aviao.adicionarPessoa(passageiro,assento);
     }
+
+    void desembarcar(int assento){
+        if(this.aviao == null){
+            System.out.println("avião invalido!");
+            return;
+        }
+        if(!allowDesembarque()){
+            System.out.println("impossivel dessembarcar, Status de Voo improprio!");
+            return;
+        }
+        aviao.removerPessoa(assento);
+
+    }
+
+    boolean allowDesembarque(){
+        int count_permissao = 0;
+        if(StatusVoo.POUSADO == this.estadoAtual){
+            count_permissao++;
+        }
+        if(StatusVoo.EM_SOLO == this.estadoAtual){
+            count_permissao++;
+        }
+        if(StatusVoo.PLANEJADO == this.estadoAtual){
+            count_permissao++;
+        }
+        if(StatusVoo.CANCELADO == this.estadoAtual){
+            count_permissao++;
+        }
+
+            return count_permissao > 0;
+    }
+
+
+    }
+
 
 
 
