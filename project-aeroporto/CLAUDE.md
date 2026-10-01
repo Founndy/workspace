@@ -2,6 +2,8 @@
 
 Exercício de POO em Java: sistema de operação de voos em um aeroporto. É trabalho da faculdade e **sessão de aprendizado**: siga as regras de trabalho do `CLAUDE.md` da raiz (atuar como professor, não implementar código).
 
+**Ritmo acelerado (pedido dele em 01/10):** pode dar dicas mais diretas e mostrar estruturas/esqueletos funcionais do próprio domínio (assinaturas, `switch`, interface da estratégia, ordem das guardas), deixando o preenchimento das regras para ele. Continua sem implementar o método inteiro por ele.
+
 ## Enunciado da atividade (transcrição fiel do PDF, que não foi publicado)
 
 **Tema:** Operação de voos em um aeroporto
@@ -99,17 +101,18 @@ Plano do `Voo` (guiar passo a passo; o usuário implementa):
 4. ~~Embarque/desembarque~~ (feito e testado). `Voo.embarcar(Passageiro, int assento)`: guarda de avião `null` **antes** de usar `aviao` (senão NPE), guarda de status (`EM_SOLO`), delega a `aviao.adicionarPessoa`. `Voo.desembarcar(int assento)`: mesma forma, mas aceita vários status via `boolean allowDesembarque()` (POUSADO, EM_SOLO, PLANEJADO, CANCELADO) e delega a `aviao.removerPessoa(int)`. `Aviao` ganhou `removerPessoa(int assento)` (limite `assentos.length - 1`, recusa assento já vazio).
    Conceitos explicados nesta etapa: **o `Voo` não mexe nos assentos, delega** ao `Aviao`; um método da classe já enxerga os campos dela — não receber como parâmetro algo que já é seu (**shadowing**, exemplo da `Estante`/geladeira, e o porquê do `this.` nos setters); `length` é quantidade, último índice é `length - 1`; método `void` não informa o resultado, então quem chama não pode anunciar sucesso (ele escolheu a opção "só o `Aviao` imprime"; a alternativa de `adicionarPessoa` devolver `boolean` ficou em aberto); condição "nenhum dos permitidos" usa `&&`, não `||`; **nome de método booleano deve casar com o que ele devolve** (o `allowDesembarque` chegou a devolver `true` quando era proibido).
    Ele gosta de extrair verificações para métodos próprios — bom instinto, incentivar. Manteve um contador onde um `||` bastava; foi apontado duas vezes, não insistir mais.
-5. **Passo em que paramos: troca de status com regras — EM ANDAMENTO, o código NÃO COMPILA.**
-   Motivação mostrada a ele com teste: hoje dá para ir a EM_ROTA sem avião nem tripulação, decolar depois de CANCELADO e setar status `null`. O `requisitosAlcancado()` existe mas ninguém o chama.
+5. **Passo em que paramos: troca de status com regras — EM ANDAMENTO (compila).**
+   Motivação mostrada a ele com teste: hoje dá para ir a EM_ROTA sem avião nem tripulação, decolar depois de CANCELADO e setar status `null`.
    Decisões que ele já tomou: manteve o nome `setEstadoAtual` (em vez de criar `alterarStatus`) e o moveu para o fim da classe, junto com as regras — ou seja, não há mais porta dos fundos.
-   **Erro de compilação atual:** `Voo.allowDecolagem` faz `aviao.assentos[i]` e `assentos` é `private` no `Aviao`. Usar como lição de encapsulamento: o `Voo` deve **perguntar** ao `Aviao` (faltaria um método lá que conte/informe os passageiros), não alcançar o array.
-   Bugs/pontos já apontados, ainda não corrigidos:
-   - `setEstadoAtual` nunca atribui `this.estadoAtual = estadoAtual` — nenhuma troca acontece.
-   - `if(requisitosAlcancado())` invertido, falta o `!` (mesmo erro do `allowDesembarque`; ele repete esse padrão — sempre mandar ler a condição em voz alta).
-   - As guardas valem para toda troca, mas as regras deveriam depender do **status de destino** (exigir avião+tripulação para ir a EM_SOLO ou CANCELADO não faz sentido). Esse é o ponto de design central do passo.
-   - `allowDecolagem(Aviao, StatusVoo)` recebe como parâmetro campos que o próprio `Voo` já tem (**shadowing de novo**, 2ª vez); falta `return` no caminho de sucesso; usa `50` fixo em vez da capacidade do avião.
-   - **Regra de 75% de ocupação para decolar é invenção dele, não está no enunciado** — sugerido remover e ficar em: avião alocado + tripulação completa. Aguardando a decisão dele.
-   Ainda pendente do passo: de quais status o CANCELADO é permitido (é estado final); e **em quais transições o avião volta a ficar disponível** — `alocarAviao` faz `setDisponivel(false)` e nada nunca devolve para `true`.
+   Feito em 01/10: `Aviao.contarPassageiros()` (o `Voo` pergunta em vez de acessar `assentos`, que é `private`); `!` do `requisitosAlcancado()` corrigido; `allowDecolagem` antigo (75%) removido.
+   Plano entregue a ele (ritmo acelerado): tabela de transições PLANEJADO→EM_SOLO/CANCELADO, EM_SOLO→TAXIANDO/CANCELADO, TAXIANDO→DECOLADO/EM_SOLO, DECOLADO→EM_ROTA, EM_ROTA→EM_APROXIMACAO, EM_APROXIMACAO→POUSADO, POUSADO/CANCELADO→nada; `private boolean transicaoValida(StatusVoo novo)` com `switch` de seta; `setEstadoAtual` = guardas (`null`, `!transicaoValida`, ir a EM_SOLO exige avião e `requisitosAlcancado()`) + atribuição no fim. Avião e tripulação só são exigidos ao sair do PLANEJADO, para permitir cancelar voo sem avião.
+   Pendente, já apontado:
+   - `setEstadoAtual` ainda não atribui `this.estadoAtual` — nenhuma troca acontece.
+   - `allowDecolagem()` novo: `POUSADO || EM_SOLO || aviao.contarPassageiros() == 50` — com `||` libera decolar em EM_ROTA lotado; NPE se `aviao` `null`; "só decola lotado" não está no enunciado. Sugerido apagar (ninguém chama; a regra fica no `transicaoValida`).
+   - `contarPassageiros` usa `50` fixo em vez de `assentos.length`.
+   - `allowDesembarque` segue com contador — já apontado 3 vezes, NÃO insistir mais.
+   - Em quais transições o avião volta a ficar disponível (`setDisponivel(true)` nunca é chamado).
+   Depois do passo 5: deixar `Pessoa`/`Tripulante` `abstract`; remover `tripulantes`/`adicionarTripulante` do `Aviao`.
 6. `OperacaoVoo` / `Decolagem` / `Pouso` e troca de estratégia no `Voo`.
 7. `main` de demonstração conforme o item 5 do enunciado.
 

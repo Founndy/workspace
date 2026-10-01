@@ -77,6 +77,7 @@ public class Voo {
         System.out.println("Aviao alocado");
 
     }
+
     void alocarTripulante(Tripulante tripulante) {
         if (tripulante == null) {
             System.out.println("Tripulante invalido!");
@@ -111,7 +112,7 @@ public class Voo {
                     }
                 }
             }
-            if(tripulante instanceof Copiloto) {
+            if (tripulante instanceof Copiloto) {
                 for (int i = 0; i < tripulantes.length; i++) {
                     if (tripulantes[i] instanceof Copiloto) {
                         System.out.println("Copiloto ja alocado!");
@@ -132,9 +133,10 @@ public class Voo {
 
         System.out.println("Vagas indisponivel para Tripulantes.");
     }
-    boolean requisitosAlcancado(){
-       int count_comisario = 0, count_copiloto = 0, count_piloto = 0;
-        for(int i = 0; i < tripulantes.length;i++) {
+
+    boolean requisitosAlcancado() {
+        int count_comisario = 0, count_copiloto = 0, count_piloto = 0;
+        for (int i = 0; i < tripulantes.length; i++) {
             if (tripulantes[i] instanceof Piloto) {
                 count_piloto++;
             }
@@ -145,27 +147,27 @@ public class Voo {
                 count_comisario++;
             }
         }
-               return count_copiloto == 1 && count_comisario >= 1 && count_piloto == 1;
-        }
+        return count_copiloto == 1 && count_comisario >= 1 && count_piloto == 1;
+    }
 
-    void embarcar(Passageiro passageiro, int assento){
-        if(this.aviao == null){
+    void embarcar(Passageiro passageiro, int assento) {
+        if (this.aviao == null) {
             System.out.println("avião invalido!");
             return;
         }
-        if(StatusVoo.EM_SOLO != this.estadoAtual){
+        if (StatusVoo.EM_SOLO != this.estadoAtual) {
             System.out.println("Status diferente de EM SOLO, Impossivel embarcar!");
             return;
         }
-        aviao.adicionarPessoa(passageiro,assento);
+        aviao.adicionarPessoa(passageiro, assento);
     }
 
-    void desembarcar(int assento){
-        if(this.aviao == null){
+    void desembarcar(int assento) {
+        if (this.aviao == null) {
             System.out.println("avião invalido!");
             return;
         }
-        if(!allowDesembarque()){
+        if (!allowDesembarque()) {
             System.out.println("impossivel dessembarcar, Status de Voo improprio!");
             return;
         }
@@ -173,22 +175,22 @@ public class Voo {
 
     }
 
-    boolean allowDesembarque(){
+    boolean allowDesembarque() {
         int count_permissao = 0;
-        if(StatusVoo.POUSADO == this.estadoAtual){
+        if (StatusVoo.POUSADO == this.estadoAtual) {
             count_permissao++;
         }
-        if(StatusVoo.EM_SOLO == this.estadoAtual){
+        if (StatusVoo.EM_SOLO == this.estadoAtual) {
             count_permissao++;
         }
-        if(StatusVoo.PLANEJADO == this.estadoAtual){
+        if (StatusVoo.PLANEJADO == this.estadoAtual) {
             count_permissao++;
         }
-        if(StatusVoo.CANCELADO == this.estadoAtual){
+        if (StatusVoo.CANCELADO == this.estadoAtual) {
             count_permissao++;
         }
 
-            return count_permissao > 0;
+        return count_permissao > 0;
     }
 
     /*São 8 status:
@@ -202,12 +204,12 @@ em aproximação
 pousado
 cancelado
 */
-    void setEstadoAtual(StatusVoo estadoAtual){
-        if(this.aviao == null){
+    void setEstadoAtual(StatusVoo estadoAtual) {
+        if (this.aviao == null) {
             System.out.println("Avião invalido!");
             return;
         }
-        if(requisitosAlcancado()){
+        if (!requisitosAlcancado()) {
             System.out.println("requisitos de tripulação não alcaçados!");
             return;
         }
@@ -215,23 +217,8 @@ cancelado
 
     }
 
-    boolean allowDecolagem(Aviao aviao,StatusVoo estadoAtual){
-        int count_passageiro = 0;
-        for(int i = 0; i < 50;i++){
-            if(aviao.assentos[i] != null){
-                count_passageiro++;
-            }
-        }
-        if(count_passageiro < 0.75*50){
-            System.out.println("Quantidade de pessoas insuficientes!");
-            return false;
-        }
-    }
 
-
-    }
-
-
+}
 
 
 

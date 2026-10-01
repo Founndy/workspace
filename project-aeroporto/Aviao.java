@@ -56,4 +56,13 @@ public class Aviao {
     public boolean isDisponivel() {
         return disponivel;
     }
+
+    int contarPassageiros(){
+        int count_passageiro = 0;
+        for(int i = 0; i < assentos.length;i++){
+            if(assentos[i] != null){
+                count_passageiro++;
+            }
+        } return count_passageiro;
+    }
 }
