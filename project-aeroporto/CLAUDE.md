@@ -101,19 +101,16 @@ Plano do `Voo` (guiar passo a passo; o usuário implementa):
 4. ~~Embarque/desembarque~~ (feito e testado). `Voo.embarcar(Passageiro, int assento)`: guarda de avião `null` **antes** de usar `aviao` (senão NPE), guarda de status (`EM_SOLO`), delega a `aviao.adicionarPessoa`. `Voo.desembarcar(int assento)`: mesma forma, mas aceita vários status via `boolean allowDesembarque()` (POUSADO, EM_SOLO, PLANEJADO, CANCELADO) e delega a `aviao.removerPessoa(int)`. `Aviao` ganhou `removerPessoa(int assento)` (limite `assentos.length - 1`, recusa assento já vazio).
    Conceitos explicados nesta etapa: **o `Voo` não mexe nos assentos, delega** ao `Aviao`; um método da classe já enxerga os campos dela — não receber como parâmetro algo que já é seu (**shadowing**, exemplo da `Estante`/geladeira, e o porquê do `this.` nos setters); `length` é quantidade, último índice é `length - 1`; método `void` não informa o resultado, então quem chama não pode anunciar sucesso (ele escolheu a opção "só o `Aviao` imprime"; a alternativa de `adicionarPessoa` devolver `boolean` ficou em aberto); condição "nenhum dos permitidos" usa `&&`, não `||`; **nome de método booleano deve casar com o que ele devolve** (o `allowDesembarque` chegou a devolver `true` quando era proibido).
    Ele gosta de extrair verificações para métodos próprios — bom instinto, incentivar. Manteve um contador onde um `||` bastava; foi apontado duas vezes, não insistir mais.
-5. **Passo em que paramos: troca de status com regras — EM ANDAMENTO (compila).**
-   Motivação mostrada a ele com teste: hoje dá para ir a EM_ROTA sem avião nem tripulação, decolar depois de CANCELADO e setar status `null`.
-   Decisões que ele já tomou: manteve o nome `setEstadoAtual` (em vez de criar `alterarStatus`) e o moveu para o fim da classe, junto com as regras — ou seja, não há mais porta dos fundos.
-   Feito em 01/10: `Aviao.contarPassageiros()` (o `Voo` pergunta em vez de acessar `assentos`, que é `private`); `!` do `requisitosAlcancado()` corrigido; `allowDecolagem` antigo (75%) removido.
-   Plano entregue a ele (ritmo acelerado): tabela de transições PLANEJADO→EM_SOLO/CANCELADO, EM_SOLO→TAXIANDO/CANCELADO, TAXIANDO→DECOLADO/EM_SOLO, DECOLADO→EM_ROTA, EM_ROTA→EM_APROXIMACAO, EM_APROXIMACAO→POUSADO, POUSADO/CANCELADO→nada; `private boolean transicaoValida(StatusVoo novo)` com `switch` de seta; `setEstadoAtual` = guardas (`null`, `!transicaoValida`, ir a EM_SOLO exige avião e `requisitosAlcancado()`) + atribuição no fim. Avião e tripulação só são exigidos ao sair do PLANEJADO, para permitir cancelar voo sem avião.
-   Pendente, já apontado:
-   - `setEstadoAtual` ainda não atribui `this.estadoAtual` — nenhuma troca acontece.
-   - `allowDecolagem()` novo: `POUSADO || EM_SOLO || aviao.contarPassageiros() == 50` — com `||` libera decolar em EM_ROTA lotado; NPE se `aviao` `null`; "só decola lotado" não está no enunciado. Sugerido apagar (ninguém chama; a regra fica no `transicaoValida`).
-   - `contarPassageiros` usa `50` fixo em vez de `assentos.length`.
-   - `allowDesembarque` segue com contador — já apontado 3 vezes, NÃO insistir mais.
-   - Em quais transições o avião volta a ficar disponível (`setDisponivel(true)` nunca é chamado).
-   Depois do passo 5: deixar `Pessoa`/`Tripulante` `abstract`; remover `tripulantes`/`adicionarTripulante` do `Aviao`.
-6. `OperacaoVoo` / `Decolagem` / `Pouso` e troca de estratégia no `Voo`.
+5. ~~Troca de status com regras~~ (feito e testado em 05/10).
+   Decisões dele: manteve o nome `setEstadoAtual` (em vez de criar `alterarStatus`) e o moveu para o fim da classe junto com as regras — não há mais porta dos fundos.
+   `private boolean transicaoValida(StatusVoo novo)`: `switch` de seta sobre `this.estadoAtual`, devolvendo os destinos válidos de cada estado. Tabela escolhida: PLANEJADO→EM_SOLO/CANCELADO; EM_SOLO→TAXIANDO/CANCELADO; TAXIANDO→DECOLADO/CANCELADO; DECOLADO→EM_ROTA; EM_ROTA→EM_APROXIMACAO; EM_APROXIMACAO→POUSADO; POUSADO/CANCELADO→nada (finais). Ele optou por não permitir TAXIANDO→EM_SOLO (voltar ao portão).
+   `setEstadoAtual(StatusVoo)`: 1) `!transicaoValida` (guarda mais geral vem primeiro); 2) só quando o destino é EM_SOLO, exige `aviao != null` e `requisitosAlcancado()` — aninhadas num `if` de destino, senão bloqueariam até o cancelamento de um voo sem avião; 3) atribui `this.estadoAtual`; 4) em CANCELADO/POUSADO chama `aviao.setDisponivel(true)`, com guarda de `null` antes.
+   `null` é barrado de graça: o `switch` roda sobre o campo (nunca nulo) e todas as comparações com o parâmetro dão `false`.
+   Conceitos desta etapa: regras dependem do **destino**, não valem para toda troca; ordem das guardas (mais geral primeiro); `switch` de seta não precisa de `break` nem de `default` quando o enum está coberto; estado final; liberar recurso ao fim do ciclo de vida.
+   Sobras pequenas, não insistir: a mensagem `"Aviao " + aviao + "agora disponivel!"` imprime `Classe@hash` (toString padrão) e falta um espaço — explicado, decisão dele; `contarPassageiros()` ficou sem ninguém chamando depois que a regra de lotação foi removida por não estar no enunciado.
+   `allowDesembarque` segue com contador onde um `||` bastava — apontado 3 vezes, NÃO insistir mais.
+   Pendências antigas, para depois: deixar `Pessoa`/`Tripulante` `abstract`; remover `tripulantes`/`adicionarTripulante` do `Aviao`.
+6. **Passo em que paramos:** `OperacaoVoo` / `Decolagem` / `Pouso` e troca de estratégia no `Voo`.
 7. `main` de demonstração conforme o item 5 do enunciado.
 
 ## Como rodar

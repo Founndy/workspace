@@ -205,16 +205,43 @@ pousado
 cancelado
 */
     void setEstadoAtual(StatusVoo estadoAtual) {
-        if (this.aviao == null) {
-            System.out.println("Avião invalido!");
+        if (!transicaoValida(estadoAtual)) {
+            System.out.println("transição de status inválida!");
             return;
         }
-        if (!requisitosAlcancado()) {
-            System.out.println("requisitos de tripulação não alcaçados!");
+        if (StatusVoo.EM_SOLO == estadoAtual) {
+            if (this.aviao == null) {
+                System.out.println("Avião invalido!");
+                return;
+            }
+            if (!requisitosAlcancado()) {
+                System.out.println("requisitos de tripulação não alcaçados!");
+                return;
+            }
+        }
+
+        this.estadoAtual = estadoAtual;
+        if(estadoAtual == StatusVoo.CANCELADO || estadoAtual == StatusVoo.POUSADO){
+            if(aviao == null){
+                return;
+            }
+            aviao.setDisponivel(true);
+            System.out.println("Aviao " + aviao + " agora disponivel!");
             return;
         }
 
+    }
 
+    private boolean transicaoValida(StatusVoo novo) {
+        return switch (this.estadoAtual) {
+            case PLANEJADO -> novo == StatusVoo.EM_SOLO || novo == StatusVoo.CANCELADO;
+            case EM_SOLO -> novo == StatusVoo.TAXIANDO || novo == StatusVoo.CANCELADO;
+            case TAXIANDO -> novo == StatusVoo.DECOLADO || novo == StatusVoo.CANCELADO;
+            case DECOLADO -> novo == StatusVoo.EM_ROTA;
+            case EM_ROTA -> novo == StatusVoo.EM_APROXIMACAO;
+            case EM_APROXIMACAO -> novo == StatusVoo.POUSADO;
+            case POUSADO, CANCELADO -> false;   // estados finais
+        };
     }
 
 
