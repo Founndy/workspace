@@ -265,7 +265,7 @@ cancelado
             return;
         }
         aviao.setDisponivel(true);
-        System.out.println("Aviao " + aviao + " agora disponivel!");
+        System.out.println("Avião agora disponível!");
     }
 
     private boolean transicaoValida(StatusVoo novo) {

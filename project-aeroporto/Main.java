@@ -38,6 +38,10 @@ public class Main {
         vooB30.setOperacao(new Pouso());
         vooB30.executarOperacao();
 
+        for (int assento = 0; assento <= 3; assento++) {
+            vooB30.desembarcar(assento);
+        }
+
         Pessoa[] pessoas = { piloto01, copiloto01, comissario01, passageiro01, passageiro02,passageiro03,passageiro04 };
         for (Pessoa p : pessoas) {
             p.anunciar();
