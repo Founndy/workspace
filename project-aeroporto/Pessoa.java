@@ -1,4 +1,4 @@
-public class Pessoa {
+public abstract class Pessoa {
 
     private String nome;
     private String cpf;
@@ -19,7 +19,9 @@ public class Pessoa {
     }
 
     public void setCpf(String cpf) {
+        if(cpf != null && !cpf.isBlank()){
         this.cpf = cpf;
+        }
     }
 
     public void setNome(String nome) {

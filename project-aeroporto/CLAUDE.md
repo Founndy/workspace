@@ -109,9 +109,11 @@ Plano do `Voo` (guiar passo a passo; o usuário implementa):
    Conceitos desta etapa: regras dependem do **destino**, não valem para toda troca; ordem das guardas (mais geral primeiro); `switch` de seta não precisa de `break` nem de `default` quando o enum está coberto; estado final; liberar recurso ao fim do ciclo de vida.
    Sobras pequenas, não insistir: a mensagem `"Aviao " + aviao + "agora disponivel!"` imprime `Classe@hash` (toString padrão) e falta um espaço — explicado, decisão dele; `contarPassageiros()` ficou sem ninguém chamando depois que a regra de lotação foi removida por não estar no enunciado.
    `allowDesembarque` segue com contador onde um `||` bastava — apontado 3 vezes, NÃO insistir mais.
-   Pendências antigas, para depois: deixar `Pessoa`/`Tripulante` `abstract`; remover `tripulantes`/`adicionarTripulante` do `Aviao`.
-6. **Passo em que paramos:** `OperacaoVoo` / `Decolagem` / `Pouso` e troca de estratégia no `Voo`.
-7. `main` de demonstração conforme o item 5 do enunciado.
+   Pendências antigas resolvidas em 06/10: `Pessoa`/`Tripulante` agora `abstract` (explicado com o porquê: categorias, não coisas concretas; construtor usado via `super`); `tripulantes`/`adicionarTripulante` removidos do `Aviao` (uma informação, um lugar).
+6. ~~`OperacaoVoo` / `Decolagem` / `Pouso`~~ (feito e testado em 06/10). Interface `OperacaoVoo { void executar(Voo voo); }`; `Decolagem` faz TAXIANDO→DECOLADO→EM_ROTA e `Pouso` EM_APROXIMACAO→POUSADO, só via `voo.setEstadoAtual` (as regras valem de graça; voo cancelado não decola). `Voo` tem `private OperacaoVoo operacao`, `setOperacao` e `executarOperacao` com guarda de `null` + `return`. Explicado com a analogia da furadeira (encaixe = atributo, ponta = implementação, botão = `executarOperacao`). `setEstadoAtual` ganhou `println` de sucesso ("Voo X: status alterado para Y"). Decisão dele: manter "Operação executada!" no `setOperacao` (imprime ao encaixar, não ao executar).
+7. ~~`main` de demonstração~~ (feito em 06/10): cobre os 6 itens do enunciado, inclusive recusas de propósito (EM_ROTA antes da tripulação completa, embarque antes de EM_SOLO, passageiro repetido) e o `Pessoa[]` com for-each chamando `anunciar()`.
+
+**Projeto concluído em 06/10.** O Claude, a pedido dele, fez: validação em `Pessoa.setCpf` e `Passageiro.setPassaporte` (`!= null && !isBlank()`, construtor do `Passageiro` passa pelo setter) e redesenhou o `Diagrama Aeroporto.drawio` como UML completo a partir do código (atributos, métodos com visibilidade, estereótipos «abstract»/«interface»/«enumeration», herança, realização e associações com multiplicidade). `Tripulante.setTitulo` continua sem validação.
 
 ## Como rodar
 

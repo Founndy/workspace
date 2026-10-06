@@ -1,7 +1,6 @@
 public class Aviao {
 
     private Passageiro[] assentos = new Passageiro[50];
-    private Tripulante[] tripulantes = new Tripulante[10];
     private boolean disponivel;
 
 
@@ -38,16 +37,6 @@ public class Aviao {
         System.out.println("Passageiro removido!");
     }
 
-    public void adicionarTripulante(Tripulante tripulante){
-        for(int i = 0; i < tripulantes.length;i++) {
-            if (tripulantes[i] == null) {
-                tripulantes[i] = tripulante;
-                System.out.println("Tripulante alocado com sucesso!");
-                return;
-            }
-        }
-                System.out.println("Sem espaço para tripulantes");
-    }
 
     void setDisponivel(boolean disponivel){
         this.disponivel = disponivel;

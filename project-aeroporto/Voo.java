@@ -4,6 +4,7 @@ public class Voo {
     private String aeroEntrada;
     private StatusVoo estadoAtual;
     private Aviao aviao;
+    private OperacaoVoo operacao;
 
     private Tripulante[] tripulantes = new Tripulante[10];
 
@@ -49,6 +50,23 @@ public class Voo {
         if (aeroEntrada != null && !aeroEntrada.isBlank()) {
             this.aeroEntrada = aeroEntrada;
         }
+    }
+
+    void setOperacao(OperacaoVoo operacao) {
+        if (operacao == null) {
+            System.out.println("Operação invalida");
+            return;
+        }
+        this.operacao = operacao;
+        System.out.println("Operação executada!");
+    }
+
+    void executarOperacao() {
+        if (operacao == null) {
+            System.out.println("Operação invalida");
+            return;
+        }
+        operacao.executar(this);
     }
 
     void alocarAviao(Aviao aviao) {
@@ -221,8 +239,10 @@ cancelado
         }
 
         this.estadoAtual = estadoAtual;
-        if(estadoAtual == StatusVoo.CANCELADO || estadoAtual == StatusVoo.POUSADO){
-            if(aviao == null){
+        System.out.println("Voo " + codVoo + ": status alterado para " + estadoAtual);
+
+        if (estadoAtual == StatusVoo.CANCELADO || estadoAtual == StatusVoo.POUSADO) {
+            if (aviao == null) {
                 return;
             }
             aviao.setDisponivel(true);

@@ -1,4 +1,4 @@
-public class Tripulante extends Pessoa{
+public abstract class Tripulante extends Pessoa {
 
     private String titulo;
 

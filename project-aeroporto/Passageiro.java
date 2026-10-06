@@ -4,7 +4,7 @@ public class Passageiro extends Pessoa{
 
     Passageiro(String nome, String cpf, String passaporte){
         super(nome, cpf);
-        this.passaporte = passaporte;
+        setPassaporte(passaporte);
     }
 
     public String getPassaporte() {
@@ -12,6 +12,8 @@ public class Passageiro extends Pessoa{
     }
 
     public void setPassaporte(String passaporte) {
+        if(passaporte != null && !passaporte.isBlank()){
         this.passaporte = passaporte;
+        }
     }
 }
