@@ -149,7 +149,7 @@ public class Voo {
 
         }
 
-        System.out.println("Vagas indisponivel para Tripulantes.");
+        System.out.println("Vagas indisponiveis para Tripulantes.");
     }
 
     boolean requisitosAlcancado() {
@@ -186,11 +186,11 @@ public class Voo {
             return;
         }
         if (!allowDesembarque()) {
-            System.out.println("impossivel dessembarcar, Status de Voo improprio!");
+            System.out.println("impossivel desembarcar, Status de Voo improprio!");
             return;
         }
         aviao.removerPessoa(assento);
-
+        liberarAviaoSeVazio();
     }
 
     boolean allowDesembarque() {
@@ -233,7 +233,7 @@ cancelado
                 return;
             }
             if (!requisitosAlcancado()) {
-                System.out.println("requisitos de tripulação não alcaçados!");
+                System.out.println("requisitos de tripulação não alcançados!");
                 return;
             }
         }
@@ -245,11 +245,27 @@ cancelado
             if (aviao == null) {
                 return;
             }
-            aviao.setDisponivel(true);
-            System.out.println("Aviao " + aviao + " agora disponivel!");
-            return;
+            if (aviao.contarPassageiros() > 0) {
+                System.out.println("Aviao sera liberado apos o desembarque de todos os passageiros.");
+                return;
+            }
+            liberarAviaoSeVazio();
         }
 
+    }
+
+    private void liberarAviaoSeVazio() {
+        if (aviao == null) {
+            return;
+        }
+        if (estadoAtual != StatusVoo.CANCELADO && estadoAtual != StatusVoo.POUSADO) {
+            return;
+        }
+        if (aviao.isDisponivel() || aviao.contarPassageiros() > 0) {
+            return;
+        }
+        aviao.setDisponivel(true);
+        System.out.println("Aviao " + aviao + " agora disponivel!");
     }
 
     private boolean transicaoValida(StatusVoo novo) {

@@ -4,7 +4,7 @@ public abstract class Tripulante extends Pessoa {
 
     public Tripulante(String nome,String cpf,String titulo){
         super(nome, cpf);
-        this.titulo = titulo;
+        setTitulo(titulo);
     }
 
     public String getTitulo() {
@@ -12,7 +12,9 @@ public abstract class Tripulante extends Pessoa {
     }
 
     public void setTitulo(String titulo) {
+        if(titulo != null && !titulo.isBlank()){
         this.titulo = titulo;
+        }
     }
 
     @Override

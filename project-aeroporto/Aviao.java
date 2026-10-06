@@ -9,6 +9,10 @@ public class Aviao {
     }
 
     public void adicionarPessoa(Passageiro passageiro, int assento){
+        if(passageiro == null){
+            System.out.println("Passageiro invalido!");
+            return;
+        }
         for(int i = 0; i < assentos.length; i++){
             if(passageiro == assentos[i]){
                 System.out.println("Passageiro ja alocado!");
@@ -30,7 +34,7 @@ public class Aviao {
             return;
         }
         if(assentos[assento] == null){
-            System.out.println("assento ja desucupado!");
+            System.out.println("assento ja desocupado!");
             return;
         }
         assentos[assento] = null;
