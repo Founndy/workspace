@@ -14,6 +14,9 @@ obj/
 *.dll
 *.zip
 
+# Enunciados em PDF ficam só na máquina local
+*.pdf
+
 # IDE e saídas de compilação (IntelliJ / CLion)
 .idea/
 out/
