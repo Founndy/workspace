@@ -48,7 +48,7 @@ Conceitos liberados (vistos no aeroporto): atributos `private`, setters com vali
 
 ## Estado
 
-Implementação completa, compila e o `Main` roda (08/10). Falta o **diagrama de classes UML** pedido no enunciado (não existe `.drawio` nesta pasta).
+Implementação completa, compila e o `Main` roda (08/10). O **diagrama de classes UML** pedido no enunciado já foi feito e entregue por ele há tempo, fora do repositório — não precisa refazer.
 
 ## Como rodar
 
