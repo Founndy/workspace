@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Voo {
     private String codVoo;
     private String aeroSaida;
@@ -6,7 +9,7 @@ public class Voo {
     private Aviao aviao;
     private OperacaoVoo operacao;
 
-    private Tripulante[] tripulantes = new Tripulante[10];
+    private List<Tripulante> tripulantes = new ArrayList<>();
 
 
     Voo(String codVoo, String aeroSaida, String aeroEntrada) {
@@ -105,113 +108,95 @@ public class Voo {
             System.out.println("Voo indisponivel ou cancelado!");
             return;
         }
-        for (int i = 0; i < tripulantes.length; i++) {
-            if (tripulante == tripulantes[i]) {
-                System.out.println("Tripulante ja alocado!");
-                return;
-            }
-        }
-        if (tripulante instanceof Comissario) {
-            for (int i = 0; i < tripulantes.length; i++) {
-                if (tripulantes[i] == null) {
-                    tripulantes[i] = tripulante;
-                    System.out.println("Tripulante alocado com sucesso!");
-                    return;
-                }
+        if (tripulantes.contains(tripulante)) {
+            System.out.println("Tripulante ja alocado!");
+            return;
 
-            }
         }
         if (tripulante instanceof Piloto || tripulante instanceof Copiloto) {
             if (tripulante instanceof Piloto) {
-                for (int i = 0; i < tripulantes.length; i++) {
-                    if (tripulantes[i] instanceof Piloto) {
+                for (Tripulante p : tripulantes) {
+                    if (p instanceof Piloto) {
                         System.out.println("Piloto ja alocado!");
                         return;
                     }
                 }
             }
             if (tripulante instanceof Copiloto) {
-                for (int i = 0; i < tripulantes.length; i++) {
-                    if (tripulantes[i] instanceof Copiloto) {
+                for (Tripulante p : tripulantes) {
+                    if (p instanceof Copiloto) {
                         System.out.println("Copiloto ja alocado!");
                         return;
                     }
                 }
             }
-            for (int i = 0; i < tripulantes.length; i++) {
-                if (tripulantes[i] == null) {
-                    tripulantes[i] = tripulante;
-                    System.out.println("Tripulante alocado com sucesso!");
-                    return;
-                }
-
-            }
 
         }
 
-        System.out.println("Vagas indisponiveis para Tripulantes.");
+        tripulantes.add(tripulante);
+        System.out.println("Tripulante alocado com sucesso.");
     }
 
-    boolean requisitosAlcancado() {
-        int count_comisario = 0, count_copiloto = 0, count_piloto = 0;
-        for (int i = 0; i < tripulantes.length; i++) {
-            if (tripulantes[i] instanceof Piloto) {
-                count_piloto++;
-            }
-            if (tripulantes[i] instanceof Copiloto) {
-                count_copiloto++;
-            }
-            if (tripulantes[i] instanceof Comissario) {
-                count_comisario++;
-            }
+boolean requisitosAlcancado() {
+    int count_comisario = 0, count_copiloto = 0, count_piloto = 0;
+    for (Tripulante p : tripulantes) {
+        if (p instanceof Piloto) {
+            count_piloto++;
         }
-        return count_copiloto == 1 && count_comisario >= 1 && count_piloto == 1;
+        if (p instanceof Copiloto) {
+            count_copiloto++;
+        }
+        if (p instanceof Comissario) {
+            count_comisario++;
+        }
+    }
+    return count_copiloto == 1 && count_comisario >= 1 && count_piloto == 1;
+}
+
+void embarcar(Passageiro passageiro, int assento) {
+    if (this.aviao == null) {
+        System.out.println("avião invalido!");
+        return;
+    }
+    if (StatusVoo.EM_SOLO != this.estadoAtual) {
+        System.out.println("Status diferente de EM SOLO, Impossivel embarcar!");
+        return;
+    }
+    aviao.adicionarPessoa(passageiro, assento);
+}
+
+void desembarcar(int assento) {
+    if (this.aviao == null) {
+        System.out.println("avião invalido!");
+        return;
+    }
+    if (!allowDesembarque()) {
+        System.out.println("impossivel desembarcar, Status de Voo improprio!");
+        return;
+    }
+    aviao.removerPessoa(assento);
+    liberarAviaoSeVazio();
+}
+
+boolean allowDesembarque() {
+    int count_permissao = 0;
+    if (StatusVoo.POUSADO == this.estadoAtual) {
+        count_permissao++;
+    }
+    if (StatusVoo.EM_SOLO == this.estadoAtual) {
+        count_permissao++;
+    }
+    if (StatusVoo.PLANEJADO == this.estadoAtual) {
+        count_permissao++;
+    }
+    if (StatusVoo.CANCELADO == this.estadoAtual) {
+        count_permissao++;
     }
 
-    void embarcar(Passageiro passageiro, int assento) {
-        if (this.aviao == null) {
-            System.out.println("avião invalido!");
-            return;
-        }
-        if (StatusVoo.EM_SOLO != this.estadoAtual) {
-            System.out.println("Status diferente de EM SOLO, Impossivel embarcar!");
-            return;
-        }
-        aviao.adicionarPessoa(passageiro, assento);
-    }
+    return count_permissao > 0;
+}
 
-    void desembarcar(int assento) {
-        if (this.aviao == null) {
-            System.out.println("avião invalido!");
-            return;
-        }
-        if (!allowDesembarque()) {
-            System.out.println("impossivel desembarcar, Status de Voo improprio!");
-            return;
-        }
-        aviao.removerPessoa(assento);
-        liberarAviaoSeVazio();
-    }
-
-    boolean allowDesembarque() {
-        int count_permissao = 0;
-        if (StatusVoo.POUSADO == this.estadoAtual) {
-            count_permissao++;
-        }
-        if (StatusVoo.EM_SOLO == this.estadoAtual) {
-            count_permissao++;
-        }
-        if (StatusVoo.PLANEJADO == this.estadoAtual) {
-            count_permissao++;
-        }
-        if (StatusVoo.CANCELADO == this.estadoAtual) {
-            count_permissao++;
-        }
-
-        return count_permissao > 0;
-    }
-
-    /*São 8 status:
+/*São 8 status:
 
 planejado
 em solo
@@ -222,63 +207,63 @@ em aproximação
 pousado
 cancelado
 */
-    void setEstadoAtual(StatusVoo estadoAtual) {
-        if (!transicaoValida(estadoAtual)) {
-            System.out.println("transição de status inválida!");
+void setEstadoAtual(StatusVoo estadoAtual) {
+    if (!transicaoValida(estadoAtual)) {
+        System.out.println("transição de status inválida!");
+        return;
+    }
+    if (StatusVoo.EM_SOLO == estadoAtual) {
+        if (this.aviao == null) {
+            System.out.println("Avião invalido!");
             return;
         }
-        if (StatusVoo.EM_SOLO == estadoAtual) {
-            if (this.aviao == null) {
-                System.out.println("Avião invalido!");
-                return;
-            }
-            if (!requisitosAlcancado()) {
-                System.out.println("requisitos de tripulação não alcançados!");
-                return;
-            }
+        if (!requisitosAlcancado()) {
+            System.out.println("requisitos de tripulação não alcançados!");
+            return;
         }
-
-        this.estadoAtual = estadoAtual;
-        System.out.println("Voo " + codVoo + ": status alterado para " + estadoAtual);
-
-        if (estadoAtual == StatusVoo.CANCELADO || estadoAtual == StatusVoo.POUSADO) {
-            if (aviao == null) {
-                return;
-            }
-            if (aviao.contarPassageiros() > 0) {
-                System.out.println("Aviao sera liberado apos o desembarque de todos os passageiros.");
-                return;
-            }
-            liberarAviaoSeVazio();
-        }
-
     }
 
-    private void liberarAviaoSeVazio() {
+    this.estadoAtual = estadoAtual;
+    System.out.println("Voo " + codVoo + ": status alterado para " + estadoAtual);
+
+    if (estadoAtual == StatusVoo.CANCELADO || estadoAtual == StatusVoo.POUSADO) {
         if (aviao == null) {
             return;
         }
-        if (estadoAtual != StatusVoo.CANCELADO && estadoAtual != StatusVoo.POUSADO) {
+        if (aviao.contarPassageiros() > 0) {
+            System.out.println("Aviao sera liberado apos o desembarque de todos os passageiros.");
             return;
         }
-        if (aviao.isDisponivel() || aviao.contarPassageiros() > 0) {
-            return;
-        }
-        aviao.setDisponivel(true);
-        System.out.println("Avião agora disponível!");
+        liberarAviaoSeVazio();
     }
 
-    private boolean transicaoValida(StatusVoo novo) {
-        return switch (this.estadoAtual) {
-            case PLANEJADO -> novo == StatusVoo.EM_SOLO || novo == StatusVoo.CANCELADO;
-            case EM_SOLO -> novo == StatusVoo.TAXIANDO || novo == StatusVoo.CANCELADO;
-            case TAXIANDO -> novo == StatusVoo.DECOLADO || novo == StatusVoo.CANCELADO;
-            case DECOLADO -> novo == StatusVoo.EM_ROTA;
-            case EM_ROTA -> novo == StatusVoo.EM_APROXIMACAO;
-            case EM_APROXIMACAO -> novo == StatusVoo.POUSADO;
-            case POUSADO, CANCELADO -> false;   // estados finais
-        };
+}
+
+private void liberarAviaoSeVazio() {
+    if (aviao == null) {
+        return;
     }
+    if (estadoAtual != StatusVoo.CANCELADO && estadoAtual != StatusVoo.POUSADO) {
+        return;
+    }
+    if (aviao.isDisponivel() || aviao.contarPassageiros() > 0) {
+        return;
+    }
+    aviao.setDisponivel(true);
+    System.out.println("Avião agora disponível!");
+}
+
+private boolean transicaoValida(StatusVoo novo) {
+    return switch (this.estadoAtual) {
+        case PLANEJADO -> novo == StatusVoo.EM_SOLO || novo == StatusVoo.CANCELADO;
+        case EM_SOLO -> novo == StatusVoo.TAXIANDO || novo == StatusVoo.CANCELADO;
+        case TAXIANDO -> novo == StatusVoo.DECOLADO || novo == StatusVoo.CANCELADO;
+        case DECOLADO -> novo == StatusVoo.EM_ROTA;
+        case EM_ROTA -> novo == StatusVoo.EM_APROXIMACAO;
+        case EM_APROXIMACAO -> novo == StatusVoo.POUSADO;
+        case POUSADO, CANCELADO -> false;   // estados finais
+    };
+}
 
 
 }
