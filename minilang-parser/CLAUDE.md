@@ -80,7 +80,10 @@ Gramática sintática **completa**. Faltam só as regras **léxicas** de `nome` 
 ## Organização (`src/`)
 
 - `TipoToken` (19/10) → enum com os 25 tipos: `START`, `END`, as 5 reservadas (`INT`, `DOUBLE`, `IF`, `ELSE`, `WHILE`), os 16 símbolos com nomes descritivos (`ABRE_PARENTESES`, `PONTO_VIRGULA`, `SINAL_RECEBE`, `COMPARATIVO_MAIOR_IGUAL`...), `NUMERO` e `IDENTIFICADOR`. Ele tinha posto `VIRGULA` (removida, não está no enunciado) e `VARIAVEIS` (virou `IDENTIFICADOR`: um token é um item, e serve para qualquer nome).
-- Próximo: classe `Token` (tipo, texto, linha, coluna). Pergunta deixada para o léxico: `int while = 5;` deve ser aceito? (palavra reservada não pode ser nome).
+- `Token` (19/10) → `TipoToken tipo`, `String texto`, `int linha`, `int coluna`; construtor com os quatro, só getters (decisão dele: token não muda depois de criado). Primeira versão tinha `tipo` como `String` — trocado pelo enum, mesmo motivo do `StatusVoo`.
+- Próximo: `Lexer` (texto → `List<Token>`). Pergunta deixada para o léxico: `int while = 5;` deve ser aceito? (palavra reservada não pode ser nome).
+
+Didática: em 19/10 ele disse que os exercícios de "pensar" antes de ver o sistema funcionando estavam causando confusão. O que destravou foi mostrar o **sistema rodando de ponta a ponta** com um exemplo concreto (texto → tabela de tokens → parser andando com o "dedo" → `throw` → `catch` no `Main`). Antes de cada peça nova, mostrar onde ela entra nesse fluxo e um exemplo concreto do que ela produz.
 
 ## Como rodar
 
