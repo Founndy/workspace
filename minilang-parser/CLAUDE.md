@@ -33,17 +33,54 @@ O objetivo é validar se um código-fonte está sintaticamente correto, de acord
 - Receba como entrada uma lista de tokens ou um iterador de tokens.
 - Implemente métodos seguindo a gramática.
 
-## Decisões em aberto (o enunciado deixa para o aluno)
+## Arquitetura combinada
 
-- Quais são as **palavras-chave de início e de término** (não estão na lista de reservadas).
-- A **gramática** em si: forma de uma declaração de variável (com ou sem atribuição?), o que pode ir na condição do `if`, o que pode ir dentro dos blocos, se o `else` é obrigatório.
-- De onde vêm os tokens: o enunciado pede que o `Parser` **receba** a lista de tokens. Decidir se haverá também um analisador léxico (que transforma o texto em tokens) ou se os tokens serão montados à mão no `Main`. Para informar linha/coluna, cada token precisa carregar a sua posição.
+`texto → Lexer → List<Token> → Parser → "correto" ou erro com linha/coluna`
+
+- `TipoToken` (enum), `Token` (tipo, texto, linha, coluna), `Lexer` (texto → `List<Token>`), `Parser` (descida recursiva: **cada regra da gramática vira um método**), `Main` com programas válidos e com erro.
+- Ordem: gramática no papel → `TipoToken`/`Token` → `Lexer` → `Parser` → `Main`.
+
+## Decisões tomadas
+
+- **Com analisador léxico** (19/10): o programa é escrito como texto e linha/coluna saem de verdade.
+- **Erros com exceção (`throw`)** (19/10): ele ainda não viu exceções e quer aprender aqui — explicar do zero quando chegar no parser.
+
+- **Início/fim do programa: `start` e `end`** (19/10).
+- **Declaração com ou sem valor**: `int x;` e `int x = 5;` (19/10). `double` aceita número com ponto (`3.5`).
+- **Um tipo de token só para números** (`NUMERO` serve para `5` e `2.5`) (19/10).
+- **Condição do `if`** com comparação (ex.: `x > 3`) e **atribuições** dentro dos blocos (ex.: `x = x + 1;`) (19/10).
+
+## Gramática (escrita por ele em 19/10, revisada)
+
+Notação: `"x"` = texto literal; nome sem aspas = outra regra; `[ ]` = opcional; `{ }` = zero ou mais; `|` = ou.
+
+```
+programa     = "start" { declaracao } ifElse "end"
+declaracao   = tipo nome [ "=" valor ] ";"
+tipo         = "int" | "double"
+valor        = expressao
+ifElse       = "if" "(" condicao ")" bloco "else" bloco
+bloco        = "{" { atribuicao } "}"
+atribuicao   = nome "=" expressao ";"
+condicao     = expressao operador expressao
+operador     = "==" | "!=" | "<" | ">" | "<=" | ">="
+expressao    = termo { opAritmetico termo }
+opAritmetico = "+" | "-" | "*" | "/"
+termo        = nome | numero
+```
+Gramática sintática **completa**. Faltam só as regras **léxicas** de `nome` e `numero` (quais caracteres formam o token) — vão para o `Lexer`, não para o `Parser`.
+- O parser não precisa de precedência (`*` antes de `+`): só valida a forma.
+- Ele acertou o teste de leitura (programa sem `;` na declaração é inválido). Explicado que o erro é anunciado na posição do **próximo** token (o `if`), como no Java.
+- `else` tratado como **obrigatório** (o enunciado fala em "bloco if-else").
+- Dificuldades que apareceram: usou `[ ]` como "aqui vai algo" (é "opcional") e `{ }` como agrupador (é "zero ou mais" — `termo = {nome}|{numero}`, `expressao = {termo}`; ajudou testar a regra com textos que devem passar e falhar); escreveu `ifelse(condição)` (confusão com `else if` — o `else` não tem condição); pôs `"x"`/`"y"` entre aspas na condição (aspas = literal exato); `<>` e `||` não estão na lista de símbolos; misturou a regra `tipo` com a `declaracao`. A `atribuicao` saiu certa de primeira.
+
+## Decisões em aberto (o enunciado deixa para o aluno)
 - `while` está nas palavras reservadas, mas a estrutura só prevê um bloco `if-else`.
-- Como sinalizar o erro (ele ainda não viu exceções).
 
 ## Organização (`src/`)
 
-Vazio — projeto começando em 14/10.
+- `TipoToken` (19/10) → enum com os 25 tipos: `START`, `END`, as 5 reservadas (`INT`, `DOUBLE`, `IF`, `ELSE`, `WHILE`), os 16 símbolos com nomes descritivos (`ABRE_PARENTESES`, `PONTO_VIRGULA`, `SINAL_RECEBE`, `COMPARATIVO_MAIOR_IGUAL`...), `NUMERO` e `IDENTIFICADOR`. Ele tinha posto `VIRGULA` (removida, não está no enunciado) e `VARIAVEIS` (virou `IDENTIFICADOR`: um token é um item, e serve para qualquer nome).
+- Próximo: classe `Token` (tipo, texto, linha, coluna). Pergunta deixada para o léxico: `int while = 5;` deve ser aceito? (palavra reservada não pode ser nome).
 
 ## Como rodar
 
