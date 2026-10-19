@@ -124,7 +124,7 @@ public class Main {
                     }
                 """;
 
-        Lexer lexer = new Lexer("( ;\n)");
+        Lexer lexer = new Lexer("= == != < <= > >=");
         for (Token t : lexer.analisar()) {
             System.out.println(t.getTipo() + " " + t.getLinha() + ":" + t.getColuna());
         }

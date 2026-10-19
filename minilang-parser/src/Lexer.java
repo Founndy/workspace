@@ -17,8 +17,6 @@ public class Lexer {
     List<Token> analisar() {
         List<Token> tokens = new ArrayList<>();
 
-
-
         while (pos < programa.length()) {
             char c = programa.charAt(pos);
             if (c == '\n') {
@@ -52,18 +50,64 @@ public class Lexer {
             } else if (c == '/') {
                 tokens.add(new Token(TipoToken.DIVISAO, "/", linha, coluna));
                 avancar();
+            } else if (c == '=') {
+                if(espiar() == '='){
+                tokens.add(new Token(TipoToken.COMPARATIVO_IGUAL, "==", linha, coluna));
+                avancar();
+                avancar();
+                }else{
+                    tokens.add(new Token(TipoToken.SINAL_RECEBE, "=", linha, coluna));
+                    avancar();
+                }
+            } else if (c == '<') {
+                if(espiar() == '='){
+                    tokens.add(new Token(TipoToken.COMPARATIVO_MENOR_IGUAL, "<=", linha, coluna));
+                    avancar();
+                    avancar();
+                } else{
+                tokens.add(new Token(TipoToken.COMPARATIVO_MENOR, "<", linha, coluna));
+                avancar();}
+            } else if (c == '>') {
+                if(espiar() == '='){
+                    tokens.add(new Token(TipoToken.COMPARATIVO_MAIOR_IGUAL, ">=", linha, coluna));
+                    avancar();
+                    avancar();
+                } else{
+                tokens.add(new Token(TipoToken.COMPARATIVO_MAIOR, ">", linha, coluna));
+                avancar();}
+            } else if (c == '!') {
+                if(espiar() == '='){
+                    tokens.add(new Token(TipoToken.COMPARATIVO_DIFERENTE, "!=", linha, coluna));
+                    avancar();
+                    avancar();
+                } else{
+               //invalido-tratamento de exceção. fazer depois.//
+                avancar();
+                }
+            } else {
+                avancar();
             }
-            pos++;
         }
         return tokens;
     }
 
+    char espiar() {
+        if (pos + 1 < programa.length()) {
+            return programa.charAt(pos + 1);
+        }
+        return '\0';
+    }
+
     void avancar() {
         this.coluna += 1;
+        pos++;
     }
 
     void avancarLinha() {
         this.linha += 1;
+        pos++;
         this.coluna = 1;
     }
+
+
 }
