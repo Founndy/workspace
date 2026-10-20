@@ -15,7 +15,9 @@ public class Lexer {
 
 
     List<Token> analisar() {
-
+        pos = 0;
+        linha = 1;
+        coluna = 1;
         List<Token> tokens = new ArrayList<>();
 
         while (pos < programa.length()) {

@@ -1,10 +1,9 @@
-import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
     private int atual = 0;
 
-    private List<Token> tokens = new ArrayList<>();
+    private List<Token> tokens;
 
 
     Parser(List<Token> tokens){
