@@ -44,6 +44,18 @@ public class Parser {
     }
 
     void valor(){
+        expressao();
+    }
+
+    void expressao(){
+        termo();
+        while(verificar(TipoToken.MAIS) || verificar(TipoToken.MENOS) || verificar(TipoToken.MULTIPLICA) || verificar(TipoToken.DIVISAO)){
+            atual++;
+            termo();
+        }
+    }
+
+    void termo(){
         if(verificar(TipoToken.IDENTIFICADOR)){
             consumir(TipoToken.IDENTIFICADOR, "um nome ou numero");
         }else{

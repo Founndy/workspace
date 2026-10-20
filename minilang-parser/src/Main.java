@@ -127,10 +127,9 @@ public class Main {
                 """;
 
         String[] testes = {
-                "start int x = 5; int y; double t = 2.5; end",
-                "start int x = 5 end",
-                "start int while = 5; end",
-                "start int x = ; end"
+                "start int x = a + 1 * b - 2; end",
+                "start int x = 1 +; end",
+                "start int x = 1 2; end"
         };
         for (String texto : testes) {
             System.out.print("[" + texto + "] -> ");
