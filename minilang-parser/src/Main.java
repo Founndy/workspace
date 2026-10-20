@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
 
@@ -124,13 +126,20 @@ public class Main {
                     }
                 """;
 
-        try {
-            Lexer lexer = new Lexer(programa3);
-            for (Token t : lexer.analisar()) {
-                System.out.println(t.getTipo() + " '" + t.getTexto() + "' " + t.getLinha() + ":" + t.getColuna());
+        String[] testes = { "start end", "end", "start" };
+        for (String texto : testes) {
+            System.out.print("[" + texto + "] -> ");
+            try {
+                Lexer lexer = new Lexer(texto);
+                List<Token> tokens = lexer.analisar();
+                Parser parser = new Parser(tokens);
+                parser.programa();
+                System.out.println("Programa valido!");
+            } catch (ErroLexico e) {
+                System.out.println(e.getMessage());
+            } catch (ErroSintatico e) {
+                System.out.println(e.getMessage());
             }
-        } catch (ErroLexico e) {
-            System.out.println(e.getMessage());
         }
     }
 }
