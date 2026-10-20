@@ -1,7 +1,14 @@
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
+        Scanner Leitor = new Scanner(System.in);
+        String opcao = "";
 
         // PROGRAMA 1 - deve PASSAR.
         // Usa tudo o que a gramatica permite: declaracao com e sem valor, int e double
@@ -130,21 +137,69 @@ public class Main {
                 programa1, programa2, programa3, programa4, programa5,
                 programa6, programa7, programa8, programa9
         };
-        int numero = 1;
-        for (String texto : testes) {
-            System.out.print("Programa " + numero + " -> ");
-            numero++;
-            try {
-                Lexer lexer = new Lexer(texto);
-                List<Token> tokens = lexer.analisar();
-                Parser parser = new Parser(tokens);
-                parser.programa();
-                System.out.println("Programa valido!");
-            } catch (ErroLexico e) {
-                System.out.println(e.getMessage());
-            } catch (ErroSintatico e) {
-                System.out.println(e.getMessage());
+
+        while (!opcao.equals("0")) {
+            System.out.println();
+            System.out.println("=== Analisador MiniLang ===");
+            System.out.println("1 - Testar um dos exemplos");
+            System.out.println("2 - Ler de um arquivo");
+            System.out.println("3 - Digitar o programa");
+            System.out.println("0 - Sair");
+            System.out.print("Escolha: ");
+            opcao = Leitor.nextLine();
+
+            switch (opcao) {
+                case "1" -> {
+                    System.out.print("Qual exemplo (1 a " + testes.length + ")? ");
+                    String numero = Leitor.nextLine();
+                    try {
+                        int indice = Integer.parseInt(numero) - 1;
+                        if (indice < 0 || indice >= testes.length) {
+                            System.out.println("Exemplo inexistente!");
+                        } else {
+                            analisar(testes[indice]);
+                        }
+                    } catch (NumberFormatException e) {
+                        System.out.println("Digite um numero!");
+                    }
+                }
+                case "2" -> {
+                    System.out.print("Caminho do arquivo: ");
+                    String caminho = Leitor.nextLine();
+                    try {
+                        String conteudo = Files.readString(Path.of(caminho));
+                        analisar(conteudo);
+                    } catch (IOException e) {
+                        System.out.println("Nao foi possivel ler o arquivo: " + caminho);
+                    }
+                }
+                case "3" -> {
+                    System.out.println("Digite o programa (linha vazia para terminar):");
+                    String digitado = "";
+                    String linha = Leitor.nextLine();
+                    while (!linha.isEmpty()) {
+                        digitado = digitado + linha + "\n";
+                        linha = Leitor.nextLine();
+                    }
+                    analisar(digitado);
+                }
+                case "0" -> System.out.println("Ate mais!");
+                default -> System.out.println("Opcao invalida");
             }
+        }
+    }
+
+    static void analisar(String texto) {
+        try {
+            Lexer lexer = new Lexer(texto);
+            List<Token> tokens = lexer.analisar();
+            Parser parser = new Parser(tokens);
+            parser.programa();
+            System.out.println("Programa valido!");
+        } catch (ErroLexico e) {
+            System.out.println(e.getMessage());
+        } catch (ErroSintatico e) {
+            System.out.println(e.getMessage());
         }
     }
 }
