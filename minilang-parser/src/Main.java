@@ -127,12 +127,13 @@ public class Main {
                 """;
 
         String[] testes = {
-                "start int x = a + 1 * b - 2; end",
-                "start int x = 1 +; end",
-                "start int x = 1 2; end"
+                programa1, programa2, programa3, programa4, programa5,
+                programa6, programa7, programa8, programa9
         };
+        int numero = 1;
         for (String texto : testes) {
-            System.out.print("[" + texto + "] -> ");
+            System.out.print("Programa " + numero + " -> ");
+            numero++;
             try {
                 Lexer lexer = new Lexer(texto);
                 List<Token> tokens = lexer.analisar();

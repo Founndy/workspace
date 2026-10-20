@@ -26,6 +26,7 @@ public class Parser {
         while (verificar(TipoToken.INT) || verificar(TipoToken.DOUBLE)) {
             declaracao();
         }
+        ifElse();
         consumir(TipoToken.END, "'end'");
     }
 
@@ -46,6 +47,49 @@ public class Parser {
     void valor(){
         expressao();
     }
+
+    void atribuicao(){
+        consumir(TipoToken.IDENTIFICADOR, "um nome de variavel");
+        consumir(TipoToken.SINAL_RECEBE, "'='");
+        expressao();
+        consumir(TipoToken.PONTO_VIRGULA, "';'");
+    }
+
+    void bloco(){
+        consumir(TipoToken.ABRE_CHAVES, "'{'");
+        while(verificar(TipoToken.IDENTIFICADOR)){
+            atribuicao();
+        }
+        consumir(TipoToken.FECHA_CHAVES, "'}'");
+    }
+
+    void operador(){
+        if (verificar(TipoToken.COMPARATIVO_IGUAL) || verificar(TipoToken.COMPARATIVO_DIFERENTE) ||
+                verificar(TipoToken.COMPARATIVO_MAIOR) || verificar(TipoToken.COMPARATIVO_MENOR) ||
+                verificar(TipoToken.COMPARATIVO_MAIOR_IGUAL) ||
+                verificar(TipoToken.COMPARATIVO_MENOR_IGUAL)) {
+            atual++;
+        } else {
+            consumir(TipoToken.COMPARATIVO_IGUAL, "um operador de comparacao");
+        }
+    }
+
+    void condicao(){
+        expressao();
+        operador();
+        expressao();
+    }
+
+    void ifElse(){
+        consumir(TipoToken.IF, "'if'");
+        consumir(TipoToken.ABRE_PARENTESES, "'('");
+        condicao();
+        consumir(TipoToken.FECHA_PARENTESES, "')'");
+        bloco();
+        consumir(TipoToken.ELSE, "'else'");
+        bloco();
+    }
+
 
     void expressao(){
         termo();
