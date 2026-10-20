@@ -112,7 +112,27 @@ public class Lexer {
                 } else {
                     tokens.add(new Token(TipoToken.IDENTIFICADOR, palavra, linha, colunaCP));
                 }
-            } else {
+            } else if (Character.isDigit(c)) {
+                int cP = pos;
+                int colunaCP = coluna;
+                boolean temPonto = false;
+
+                while (pos < programa.length()) {
+                    char atual = programa.charAt(pos);
+                    if (Character.isDigit(atual)) {
+                        avancar();
+                    } else if (atual == '.' && !temPonto && Character.isDigit(espiar())) {
+                        temPonto = true;
+                        avancar();
+                    } else {
+                        break;
+                    }
+                }
+                String numero = programa.substring(cP, pos);
+                tokens.add(new Token(TipoToken.NUMERO, numero, linha, colunaCP));
+            }
+
+            else {
                 avancar();
             }
 

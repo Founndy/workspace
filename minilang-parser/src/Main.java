@@ -124,9 +124,9 @@ public class Main {
                     }
                 """;
 
-        Lexer lexer = new Lexer("start int while taxa x1 end");
+        Lexer lexer = new Lexer("5 2.5 10 x1 3.14");
         for (Token t : lexer.analisar()) {
-            System.out.println(t.getTipo() + " " + t.getLinha() + ":" + t.getColuna());
+            System.out.println(t.getTipo() + " '" + t.getTexto() + "' " + t.getLinha() + ":" + t.getColuna());
         }
     }
 }
