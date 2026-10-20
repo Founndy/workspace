@@ -124,9 +124,13 @@ public class Main {
                     }
                 """;
 
-        Lexer lexer = new Lexer("5 2.5 10 x1 3.14");
-        for (Token t : lexer.analisar()) {
-            System.out.println(t.getTipo() + " '" + t.getTexto() + "' " + t.getLinha() + ":" + t.getColuna());
+        try {
+            Lexer lexer = new Lexer(programa3);
+            for (Token t : lexer.analisar()) {
+                System.out.println(t.getTipo() + " '" + t.getTexto() + "' " + t.getLinha() + ":" + t.getColuna());
+            }
+        } catch (ErroLexico e) {
+            System.out.println(e.getMessage());
         }
     }
 }

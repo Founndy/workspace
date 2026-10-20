@@ -83,8 +83,7 @@ public class Lexer {
                     avancar();
                     avancar();
                 } else {
-               //invalido-tratamento de exceção. fazer depois.//
-                avancar();
+               throw new ErroLexico("linha " + linha + ", coluna " + coluna + ": caractere invalido '" + c + "'");
                 }
             } else if (Character.isLetter(c)) {
                 int cP = pos;
@@ -133,7 +132,7 @@ public class Lexer {
             }
 
             else {
-                avancar();
+                throw new ErroLexico("linha " + linha + ", coluna " + coluna + ": caractere invalido '" + c + "'");
             }
 
         }
