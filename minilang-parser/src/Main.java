@@ -126,7 +126,12 @@ public class Main {
                     }
                 """;
 
-        String[] testes = { "start end", "end", "start" };
+        String[] testes = {
+                "start int x = 5; int y; double t = 2.5; end",
+                "start int x = 5 end",
+                "start int while = 5; end",
+                "start int x = ; end"
+        };
         for (String texto : testes) {
             System.out.print("[" + texto + "] -> ");
             try {
