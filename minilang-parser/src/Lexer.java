@@ -15,9 +15,11 @@ public class Lexer {
 
 
     List<Token> analisar() {
+
         List<Token> tokens = new ArrayList<>();
 
         while (pos < programa.length()) {
+
             char c = programa.charAt(pos);
             if (c == '\n') {
                 avancarLinha();
@@ -80,13 +82,40 @@ public class Lexer {
                     tokens.add(new Token(TipoToken.COMPARATIVO_DIFERENTE, "!=", linha, coluna));
                     avancar();
                     avancar();
-                } else{
+                } else {
                //invalido-tratamento de exceção. fazer depois.//
                 avancar();
+                }
+            } else if (Character.isLetter(c)) {
+                int cP = pos;
+                int colunaCP = coluna;
+
+                while (pos < programa.length() && Character.isLetterOrDigit(programa.charAt(pos))) {
+                    avancar();
+                }
+                String palavra = programa.substring(cP, pos);
+
+                if (palavra.equals("int")) {
+                    tokens.add(new Token(TipoToken.INT, palavra, linha, colunaCP));
+                } else if (palavra.equals("start")) {
+                    tokens.add(new Token(TipoToken.START, palavra, linha, colunaCP));
+                } else if (palavra.equals("end")) {
+                    tokens.add(new Token(TipoToken.END, palavra, linha, colunaCP));
+                } else if (palavra.equals("double")) {
+                    tokens.add(new Token(TipoToken.DOUBLE, palavra, linha, colunaCP));
+                } else if (palavra.equals("if")) {
+                    tokens.add(new Token(TipoToken.IF, palavra, linha, colunaCP));
+                } else if (palavra.equals("else")) {
+                    tokens.add(new Token(TipoToken.ELSE, palavra, linha, colunaCP));
+                } else if (palavra.equals("while")) {
+                    tokens.add(new Token(TipoToken.WHILE, palavra, linha, colunaCP));
+                } else {
+                    tokens.add(new Token(TipoToken.IDENTIFICADOR, palavra, linha, colunaCP));
                 }
             } else {
                 avancar();
             }
+
         }
         return tokens;
     }

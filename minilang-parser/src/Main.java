@@ -124,7 +124,7 @@ public class Main {
                     }
                 """;
 
-        Lexer lexer = new Lexer("= == != < <= > >=");
+        Lexer lexer = new Lexer("start int while taxa x1 end");
         for (Token t : lexer.analisar()) {
             System.out.println(t.getTipo() + " " + t.getLinha() + ":" + t.getColuna());
         }
