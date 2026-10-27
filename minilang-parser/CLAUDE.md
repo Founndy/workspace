@@ -29,6 +29,8 @@ O objetivo é validar se um código-fonte está sintaticamente correto, de acord
 <Palavra chave de término do código>
 ```
 
+**Alteração do enunciado feita pelo professor (informada por ele em 27/10):** o bloco `if`-`else` **deixou de ser obrigatório**. Um programa só com `start` ... `end` é válido. Continua valendo "um único" quando o `if`-`else` aparece.
+
 **Nesse sentido, implemente uma classe Parser em Java que:**
 - Receba como entrada uma lista de tokens ou um iterador de tokens.
 - Implemente métodos seguindo a gramática.
@@ -98,6 +100,11 @@ Gramática sintática **completa**. Faltam só as regras **léxicas** de `nome` 
 1. `\r` do Windows (`\r\n`) cai no erro léxico ("caractere invalido ''", invisível) → a opção 2 do menu falha com arquivo salvo no Bloco de Notas/IntelliJ. Correção: tratar `'\r'` como espaço.
 2. Tokens depois do `end` são aceitos (`... end x = 1;` → válido). Correção: após `consumir(END)`, se `atual < tokens.size()`, lançar "esperado o fim do programa, encontrado '...'".
 3. Caminho com aspas ("Copiar como caminho" do Windows) → `InvalidPathException` (não é `IOException`) derruba o menu. Correção: tirar as aspas do caminho ou pegar a exceção.
+
+**Levantado por ele em 27/10 (confirmado em teste, ainda NÃO corrigido):**
+4. **Mudança de requisito, pedida pelo professor:** o programa deve ser válido **só com `start` ... `end`**; o bloco `if`-`else` deixa de ser obrigatório (já anotado na seção do enunciado). Hoje `"start end"` e `"start int y; end"` são recusados com "esperado 'if', encontrado 'end'". Correção: no `programa()`, trocar a chamada fixa de `ifElse()` por `if (verificar(TipoToken.IF)) ifElse();` — na tabela de tradução dele, `[ ]` (opcional) vira `if(verificar)`. Atualizar junto a linha `programa` da gramática escrita neste arquivo, para `[ ifElse ]`.
+5. **`if (x > 3)` com `x` nunca declarado é aceito** (ele classificou como erro, com o programa de exemplo das declarações `int y; double taxa = 2.5;`). Ressalva a discutir **antes** de corrigir: verificar se uma variável foi declarada é **análise semântica**, não sintática — exigiria uma tabela de símbolos (guardar os nomes declarados e consultar em cada uso). O enunciado pede "analisador sintático (parser)" e "validar se um código-fonte está sintaticamente correto", então isso **extrapola o escopo pedido**. Decisão dele: implementar mesmo assim (lista de nomes declarados + erro no uso de nome desconhecido) ou registrar como limitação conhecida, junto das outras já listadas.
+
 Menores corrigidos em 20/10: `analisar()` do `Lexer` agora zera `pos`/`linha`/`coluna` no início (antes, a 2ª chamada devolvia lista vazia); removidos o `= new ArrayList<>()` e o import sem uso do `Parser`. Fica como está (decisão): nomes com acento são aceitos (`Character.isLetter` é Unicode). Limites da gramática (decisão, não bug): sem negativos, sem parênteses em expressão, sem `if` aninhado, `while` não aceito como comando.
 - Histórico do pedaço 3 — antes: **Parou aqui em 19/10 — próximo: letras.** Já explicado a ele: guardar `pos`/`coluna` do início, `while` interno com `pos < length()` antes do `charAt` e `Character.isLetterOrDigit`, recortar com `substring(inicio, pos)`, comparar `String` com `.equals()` (não `==`), reservadas × `IDENTIFICADOR`, token com a coluna do início. Teste combinado: `"start int while taxa x1 end"` → `START 1:1`, `INT 1:7`, `WHILE 1:11`, `IDENTIFICADOR 1:17`, `IDENTIFICADOR 1:22`, `END 1:25`. Depois: números (com ponto), aí o erro léxico com exceção.
 - Histórico: o `Lexer` começou só com `private String programa` + construtor. Ele tinha posto um `Scanner(System.in)` com `nextLine()` como inicializador de atributo — removido: rodava antes do construtor (travava esperando teclado), lia uma linha só, e ler a entrada não é responsabilidade do léxico (quem decide a origem do texto é o `Main`).
