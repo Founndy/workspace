@@ -3,7 +3,7 @@ public enum TipoToken {
     START,
     END,
 
-    // palavras reservadas
+    // palavras reservadas INVENTAR O MEU PROPRIO.
     INT,
     DOUBLE,
     IF,
