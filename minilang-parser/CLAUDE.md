@@ -98,7 +98,7 @@ Gramática sintática **completa**. Faltam só as regras **léxicas** de `nome` 
 
 **Pendências da auditoria de 20/10 (confirmadas em teste, ainda NÃO corrigidas — perguntar a ele antes):**
 1. `\r` do Windows (`\r\n`) cai no erro léxico ("caractere invalido ''", invisível) → a opção 2 do menu falha com arquivo salvo no Bloco de Notas/IntelliJ. Correção: tratar `'\r'` como espaço.
-2. Tokens depois do `end` são aceitos (`... end x = 1;` → válido). Correção: após `consumir(END)`, se `atual < tokens.size()`, lançar "esperado o fim do programa, encontrado '...'".
+2. Tokens depois do `end` são aceitos (`... end x = 1;` → válido). **Regra decidida por ele (reconfirmada em 27/10, não é ponto em aberto): o `end` marca o fim do arquivo. Qualquer token depois dele torna o programa inválido.** Correção: após `consumir(END)`, se `atual < tokens.size()`, lançar "esperado o fim do programa, encontrado '...'". Caso testado em 27/10: um `INT X = 0;` solto depois do `end` passa hoje — e repare que `INT` maiúsculo nem é palavra reservada (o léxico diferencia maiúsculas), vira identificador.
 3. Caminho com aspas ("Copiar como caminho" do Windows) → `InvalidPathException` (não é `IOException`) derruba o menu. Correção: tirar as aspas do caminho ou pegar a exceção.
 
 **Levantado por ele em 27/10 (confirmado em teste, ainda NÃO corrigido):**
