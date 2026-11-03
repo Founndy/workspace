@@ -25,8 +25,14 @@ public class Parser {
         while (verificar(TipoToken.INT) || verificar(TipoToken.DOUBLE)) {
             declaracao();
         }
-        ifElse();
+        if (verificar(TipoToken.IF)) {
+            ifElse();
+        }
         consumir(TipoToken.END, "'end'");
+        if (atual < tokens.size()) {
+            Token token = tokens.get(atual);
+            throw new ErroSintatico("linha " + token.getLinha() + ", coluna " + token.getColuna() + ": esperado o fim do programa depois de 'end', encontrado '" + token.getTexto() + "'");
+        }
     }
 
     void declaracao(){

@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Scanner;
@@ -165,11 +166,14 @@ public class Main {
                 }
                 case "2" -> {
                     System.out.print("Caminho do arquivo: ");
-                    String caminho = Leitor.nextLine();
+                    String caminho = Leitor.nextLine().trim();
+                    if (caminho.length() >= 2 && caminho.startsWith("\"") && caminho.endsWith("\"")) {
+                        caminho = caminho.substring(1, caminho.length() - 1);
+                    }
                     try {
                         String conteudo = Files.readString(Path.of(caminho));
                         analisar(conteudo);
-                    } catch (IOException e) {
+                    } catch (IOException | InvalidPathException e) {
                         System.out.println("Nao foi possivel ler o arquivo: " + caminho);
                     }
                 }

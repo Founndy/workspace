@@ -57,7 +57,7 @@ O objetivo é validar se um código-fonte está sintaticamente correto, de acord
 Notação: `"x"` = texto literal; nome sem aspas = outra regra; `[ ]` = opcional; `{ }` = zero ou mais; `|` = ou.
 
 ```
-programa     = "start" { declaracao } ifElse "end"
+programa     = "start" { declaracao } [ ifElse ] "end"
 declaracao   = tipo nome [ "=" valor ] ";"
 tipo         = "int" | "double"
 valor        = expressao
@@ -96,13 +96,13 @@ Gramática sintática **completa**. Faltam só as regras **léxicas** de `nome` 
 
 **Projeto concluído em 20/10.** Gramática, `Lexer`, `Parser` com erros de linha/coluna, os 9 programas de teste batendo com os comentários e o menu. `README.md` escrito para o GitHub (requisitos, gramática, arquitetura, métodos, testes, desafios, limitações).
 
-**Pendências da auditoria de 20/10 (confirmadas em teste, ainda NÃO corrigidas — perguntar a ele antes):**
-1. `\r` do Windows (`\r\n`) cai no erro léxico ("caractere invalido ''", invisível) → a opção 2 do menu falha com arquivo salvo no Bloco de Notas/IntelliJ. Correção: tratar `'\r'` como espaço.
-2. Tokens depois do `end` são aceitos (`... end x = 1;` → válido). **Regra decidida por ele (reconfirmada em 27/10, não é ponto em aberto): o `end` marca o fim do arquivo. Qualquer token depois dele torna o programa inválido.** Correção: após `consumir(END)`, se `atual < tokens.size()`, lançar "esperado o fim do programa, encontrado '...'". Caso testado em 27/10: um `INT X = 0;` solto depois do `end` passa hoje — e repare que `INT` maiúsculo nem é palavra reservada (o léxico diferencia maiúsculas), vira identificador.
-3. Caminho com aspas ("Copiar como caminho" do Windows) → `InvalidPathException` (não é `IOException`) derruba o menu. Correção: tirar as aspas do caminho ou pegar a exceção.
+**Pendências 1 a 4 corrigidas em 03/11** (pedido dele, testadas; os 9 exemplos continuam batendo):
+1. `\r` do Windows: o `Lexer` trata `'\r'` como espaço (mesmo `else if` do espaço e do tab). Arquivo `\r\n` pela opção 2 → válido.
+2. **Regra dele: o `end` marca o fim do arquivo.** O `programa()`, depois do `consumir(END)`, lança `ErroSintatico` se `atual < tokens.size()`: "linha L, coluna C: esperado o fim do programa depois de 'end', encontrado '...'". (`INT X = 0;` depois do `end` → erro na linha 2, coluna 1.)
+3. Opção 2 do menu: o caminho passa por `trim()` e perde as aspas em volta (o "Copiar como caminho" do Windows); o `catch` pega `IOException | InvalidPathException`.
+4. **Mudança do professor:** `if`-`else` opcional. O `programa()` faz `if (verificar(TipoToken.IF)) ifElse();` e a gramática virou `programa = "start" { declaracao } [ ifElse ] "end"`. `"start end"` e `"start int y; end"` → válidos; `if` sem `else` continua erro (o `else` segue obrigatório quando há `if`).
 
-**Levantado por ele em 27/10 (confirmado em teste, ainda NÃO corrigido):**
-4. **Mudança de requisito, pedida pelo professor:** o programa deve ser válido **só com `start` ... `end`**; o bloco `if`-`else` deixa de ser obrigatório (já anotado na seção do enunciado). Hoje `"start end"` e `"start int y; end"` são recusados com "esperado 'if', encontrado 'end'". Correção: no `programa()`, trocar a chamada fixa de `ifElse()` por `if (verificar(TipoToken.IF)) ifElse();` — na tabela de tradução dele, `[ ]` (opcional) vira `if(verificar)`. Atualizar junto a linha `programa` da gramática escrita neste arquivo, para `[ ifElse ]`.
+**Ainda em aberto:**
 5. **`if (x > 3)` com `x` nunca declarado é aceito** (ele classificou como erro, com o programa de exemplo das declarações `int y; double taxa = 2.5;`). Ressalva a discutir **antes** de corrigir: verificar se uma variável foi declarada é **análise semântica**, não sintática — exigiria uma tabela de símbolos (guardar os nomes declarados e consultar em cada uso). O enunciado pede "analisador sintático (parser)" e "validar se um código-fonte está sintaticamente correto", então isso **extrapola o escopo pedido**. Decisão dele: implementar mesmo assim (lista de nomes declarados + erro no uso de nome desconhecido) ou registrar como limitação conhecida, junto das outras já listadas.
 6. **Trocar as palavras reservadas por umas inventadas por ele** (ideia dele; o lembrete "INVENTAR O MEU PROPRIO" estava como comentário no `TipoToken.java`). **Ressalva:** o enunciado transcrito lista as reservadas como `int`, `double`, `if`, `else`, `while` — confirmar com o professor antes. Escopo da mudança, se for feita: os nomes das constantes do `TipoToken` podem ficar como estão (são tipos internos); o que muda é a comparação texto → tipo no `Lexer` (onde o lexema é comparado com `"int"`, `"double"` etc.), as descrições nas mensagens de erro (`"esperado 'if'"`), os 9 programas de teste do `Main`, a gramática escrita neste arquivo e o `README.md`. Pendente: ele definir quais palavras quer.
 

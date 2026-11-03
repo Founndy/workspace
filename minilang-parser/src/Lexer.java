@@ -28,7 +28,7 @@ public class Lexer {
             } else if (c == ';') {
                 tokens.add(new Token(TipoToken.PONTO_VIRGULA, ";", linha, coluna));
                 avancar();
-            } else if (c == ' ' || c == '\t'){
+            } else if (c == ' ' || c == '\t' || c == '\r'){
                 avancar();
             } else if (c == '(') {
                 tokens.add(new Token(TipoToken.ABRE_PARENTESES, "(", linha, coluna));

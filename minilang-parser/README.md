@@ -25,6 +25,7 @@ Programa 3 -> linha 3, coluna 15: caractere invalido '@'
       <um único bloco if-else>
   <palavra-chave de término>
   ```
+  Depois de uma revisão do enunciado, o bloco `if-else` passou a ser **opcional**: um programa só com as palavras de início e término também é válido.
 - Implementar uma classe `Parser` que receba uma lista de tokens e tenha métodos seguindo a gramática.
 
 ## A linguagem MiniLang
@@ -50,7 +51,7 @@ end
 Notação: `"x"` é um texto literal; um nome sem aspas é outra regra; `[ ]` é opcional; `{ }` é zero ou mais vezes; `|` é "ou".
 
 ```
-programa     = "start" { declaracao } ifElse "end"
+programa     = "start" { declaracao } [ ifElse ] "end"
 declaracao   = tipo nome [ "=" valor ] ";"
 tipo         = "int" | "double"
 valor        = expressao
@@ -69,7 +70,9 @@ Decisões tomadas sobre o que o enunciado deixava em aberto:
 - as palavras de início e término são `start` e `end`;
 - a declaração aceita as duas formas, com e sem valor (`int x;` e `int x = 5;`);
 - o `double` usa ponto como separador decimal (`2.5`);
-- o `else` é obrigatório, porque a estrutura pede um bloco *if-else*;
+- o bloco *if-else* é opcional, mas, quando aparece, o `else` é obrigatório;
+- o `end` marca o fim do programa: qualquer coisa escrita depois dele torna o programa inválido;
+- quebras de linha do Windows (`\r\n`) são aceitas, para que arquivos criados em qualquer editor funcionem;
 - números inteiros e decimais são o mesmo tipo de token (`NUMERO`).
 
 ## Arquitetura
@@ -175,4 +178,4 @@ O `Main` traz 9 programas de exemplo, cada um com um comentário descrevendo o r
 - O analisador faz apenas a verificação **sintática**: não confere tipos (como `double` recebendo um inteiro), nem se uma variável foi declarada antes de ser usada.
 - A gramática não prevê números negativos (`-5`) nem parênteses dentro de expressões (`(1 + 2) * 3`).
 - `while` é reconhecido como palavra reservada, mas a estrutura definida no enunciado tem apenas um bloco `if-else`, então ele não é aceito como comando.
-- Por seguir o enunciado, o programa tem um único `if-else`, sem `if` aninhado.
+- Por seguir o enunciado, o programa tem no máximo um `if-else`, sem `if` aninhado.
