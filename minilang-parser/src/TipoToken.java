@@ -1,14 +1,14 @@
 public enum TipoToken {
     // inicio e fim do programa
-    START,
-    END,
+    BEGIN,
+    STOP,
 
-    // palavras reservadas INVENTAR O MEU PROPRIO.
-    INT,
-    DOUBLE,
-    IF,
-    ELSE,
-    WHILE,
+    // palavras reservadas
+    NUM,
+    REAL,
+    WHEN,
+    OTHER,
+    LOOP,
 
     // simbolos de agrupamento e pontuacao
     ABRE_PARENTESES,

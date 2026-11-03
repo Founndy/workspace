@@ -96,20 +96,20 @@ public class Lexer {
                 }
                 String palavra = programa.substring(cP, pos);
 
-                if (palavra.equals("int")) {
-                    tokens.add(new Token(TipoToken.INT, palavra, linha, colunaCP));
-                } else if (palavra.equals("start")) {
-                    tokens.add(new Token(TipoToken.START, palavra, linha, colunaCP));
-                } else if (palavra.equals("end")) {
-                    tokens.add(new Token(TipoToken.END, palavra, linha, colunaCP));
-                } else if (palavra.equals("double")) {
-                    tokens.add(new Token(TipoToken.DOUBLE, palavra, linha, colunaCP));
-                } else if (palavra.equals("if")) {
-                    tokens.add(new Token(TipoToken.IF, palavra, linha, colunaCP));
-                } else if (palavra.equals("else")) {
-                    tokens.add(new Token(TipoToken.ELSE, palavra, linha, colunaCP));
-                } else if (palavra.equals("while")) {
-                    tokens.add(new Token(TipoToken.WHILE, palavra, linha, colunaCP));
+                if (palavra.equals("num")) {
+                    tokens.add(new Token(TipoToken.NUM, palavra, linha, colunaCP));
+                } else if (palavra.equals("begin")) {
+                    tokens.add(new Token(TipoToken.BEGIN, palavra, linha, colunaCP));
+                } else if (palavra.equals("stop")) {
+                    tokens.add(new Token(TipoToken.STOP, palavra, linha, colunaCP));
+                } else if (palavra.equals("real")) {
+                    tokens.add(new Token(TipoToken.REAL, palavra, linha, colunaCP));
+                } else if (palavra.equals("when")) {
+                    tokens.add(new Token(TipoToken.WHEN, palavra, linha, colunaCP));
+                } else if (palavra.equals("other")) {
+                    tokens.add(new Token(TipoToken.OTHER, palavra, linha, colunaCP));
+                } else if (palavra.equals("loop")) {
+                    tokens.add(new Token(TipoToken.LOOP, palavra, linha, colunaCP));
                 } else {
                     tokens.add(new Token(TipoToken.IDENTIFICADOR, palavra, linha, colunaCP));
                 }

@@ -21,25 +21,25 @@ public class Parser {
         atual++;
     }
     void programa() {
-        consumir(TipoToken.START, "'start'");
-        while (verificar(TipoToken.INT) || verificar(TipoToken.DOUBLE)) {
+        consumir(TipoToken.BEGIN, "'begin'");
+        while (verificar(TipoToken.NUM) || verificar(TipoToken.REAL)) {
             declaracao();
         }
-        if (verificar(TipoToken.IF)) {
-            ifElse();
+        if (verificar(TipoToken.WHEN)) {
+            whenOther();
         }
-        consumir(TipoToken.END, "'end'");
+        consumir(TipoToken.STOP, "'stop'");
         if (atual < tokens.size()) {
             Token token = tokens.get(atual);
-            throw new ErroSintatico("linha " + token.getLinha() + ", coluna " + token.getColuna() + ": esperado o fim do programa depois de 'end', encontrado '" + token.getTexto() + "'");
+            throw new ErroSintatico("linha " + token.getLinha() + ", coluna " + token.getColuna() + ": esperado o fim do programa depois de 'stop', encontrado '" + token.getTexto() + "'");
         }
     }
 
     void declaracao(){
-        if(verificar(TipoToken.INT)){
-            consumir(TipoToken.INT, "'int'");
-        }else if(verificar(TipoToken.DOUBLE)){
-            consumir(TipoToken.DOUBLE, "'double'");
+        if(verificar(TipoToken.NUM)){
+            consumir(TipoToken.NUM, "'num'");
+        }else if(verificar(TipoToken.REAL)){
+            consumir(TipoToken.REAL, "'real'");
         }
         consumir(TipoToken.IDENTIFICADOR,"um nome de variavel");
         if (verificar(TipoToken.SINAL_RECEBE)){
@@ -85,13 +85,13 @@ public class Parser {
         expressao();
     }
 
-    void ifElse(){
-        consumir(TipoToken.IF, "'if'");
+    void whenOther(){
+        consumir(TipoToken.WHEN, "'when'");
         consumir(TipoToken.ABRE_PARENTESES, "'('");
         condicao();
         consumir(TipoToken.FECHA_PARENTESES, "')'");
         bloco();
-        consumir(TipoToken.ELSE, "'else'");
+        consumir(TipoToken.OTHER, "'other'");
         bloco();
     }
 

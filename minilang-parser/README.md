@@ -6,7 +6,7 @@ O programa recebe o código-fonte de um programa MiniLang e responde se ele est�
 
 ```
 Programa 1 -> Programa valido!
-Programa 2 -> linha 3, coluna 5: esperado ';', encontrado 'if'
+Programa 2 -> linha 3, coluna 5: esperado ';', encontrado 'when'
 Programa 3 -> linha 3, coluna 15: caractere invalido '@'
 ```
 
@@ -15,9 +15,7 @@ Programa 3 -> linha 3, coluna 15: caractere invalido '@'
 - Implementar, em Java, um analisador sintático para uma linguagem imperativa simplificada.
 - Definir a estrutura da linguagem como uma sequência de declarações e comandos, seguindo uma gramática.
 - Tratar erros sintáticos de forma clara, informando **linha, coluna e uma mensagem descritiva**.
-- Reconhecer os tokens básicos:
-  - palavras reservadas: `int`, `double`, `if`, `else`, `while`;
-  - símbolos: `(` `)` `{` `}` `;` `=` `+` `-` `*` `/` `==` `!=` `<` `>` `<=` `>=`.
+- Reconhecer os tokens básicos: cinco palavras reservadas (para dois tipos numéricos, o *if*, o *else* e o *while*) e os símbolos `(` `)` `{` `}` `;` `=` `+` `-` `*` `/` `==` `!=` `<` `>` `<=` `>=`.
 - Seguir a estrutura de código:
   ```
   <palavra-chave de início>
@@ -25,25 +23,37 @@ Programa 3 -> linha 3, coluna 15: caractere invalido '@'
       <um único bloco if-else>
   <palavra-chave de término>
   ```
-  Depois de uma revisão do enunciado, o bloco `if-else` passou a ser **opcional**: um programa só com as palavras de início e término também é válido.
+  Depois de uma revisão do enunciado, o bloco *if-else* passou a ser **opcional**: um programa só com as palavras de início e término também é válido.
 - Implementar uma classe `Parser` que receba uma lista de tokens e tenha métodos seguindo a gramática.
 
 ## A linguagem MiniLang
 
+A MiniLang usa palavras reservadas próprias, curtas e no estilo de código:
+
+| Papel | Palavra |
+|---|---|
+| início do programa | `begin` |
+| fim do programa | `stop` |
+| número inteiro | `num` |
+| número decimal | `real` |
+| condição ("se") | `when` |
+| alternativa ("senão") | `other` |
+| repetição (reservada) | `loop` |
+
 Exemplo de programa válido:
 
 ```
-start
-    int x = 5;
-    int y;
-    double taxa = 2.5;
-    if (x > 3) {
+begin
+    num x = 5;
+    num y;
+    real taxa = 2.5;
+    when (x > 3) {
         y = x + 1;
         taxa = taxa * 2 - 1;
-    } else {
+    } other {
         y = 0;
     }
-end
+stop
 ```
 
 ### Gramática
@@ -51,11 +61,11 @@ end
 Notação: `"x"` é um texto literal; um nome sem aspas é outra regra; `[ ]` é opcional; `{ }` é zero ou mais vezes; `|` é "ou".
 
 ```
-programa     = "start" { declaracao } [ ifElse ] "end"
+programa     = "begin" { declaracao } [ whenOther ] "stop"
 declaracao   = tipo nome [ "=" valor ] ";"
-tipo         = "int" | "double"
+tipo         = "num" | "real"
 valor        = expressao
-ifElse       = "if" "(" condicao ")" bloco "else" bloco
+whenOther    = "when" "(" condicao ")" bloco "other" bloco
 bloco        = "{" { atribuicao } "}"
 atribuicao   = nome "=" expressao ";"
 condicao     = expressao operador expressao
@@ -65,13 +75,12 @@ opAritmetico = "+" | "-" | "*" | "/"
 termo        = nome | numero
 ```
 
-Decisões tomadas sobre o que o enunciado deixava em aberto:
+Decisões da linguagem:
 
-- as palavras de início e término são `start` e `end`;
-- a declaração aceita as duas formas, com e sem valor (`int x;` e `int x = 5;`);
-- o `double` usa ponto como separador decimal (`2.5`);
-- o bloco *if-else* é opcional, mas, quando aparece, o `else` é obrigatório;
-- o `end` marca o fim do programa: qualquer coisa escrita depois dele torna o programa inválido;
+- a declaração aceita as duas formas, com e sem valor (`num x;` e `num x = 5;`);
+- o `real` usa ponto como separador decimal (`2.5`);
+- o bloco *when-other* é opcional, mas, quando aparece, o `other` é obrigatório;
+- o `stop` marca o fim do programa: qualquer coisa escrita depois dele torna o programa inválido;
 - quebras de linha do Windows (`\r\n`) são aceitas, para que arquivos criados em qualquer editor funcionem;
 - números inteiros e decimais são o mesmo tipo de token (`NUMERO`).
 
@@ -107,7 +116,7 @@ O trabalho é dividido em duas etapas, cada uma com uma responsabilidade:
 - um número aceita um único ponto decimal, e só se houver um dígito depois dele;
 - qualquer caractere fora da linguagem lança `ErroLexico`.
 
-**No `Parser`**, com a técnica de **descida recursiva**, em que cada regra da gramática vira um método (`programa()`, `declaracao()`, `ifElse()`, `condicao()`, `bloco()`, `atribuicao()`, `expressao()`, `termo()`, `operador()`):
+**No `Parser`**, com a técnica de **descida recursiva**, em que cada regra da gramática vira um método (`programa()`, `declaracao()`, `whenOther()`, `condicao()`, `bloco()`, `atribuicao()`, `expressao()`, `termo()`, `operador()`):
 - `consumir(tipo, descricao)` exige que o token atual seja de um tipo. Se for, avança. Se não for, lança `ErroSintatico` com a linha, a coluna e o texto encontrado. Também detecta quando a lista acaba antes da hora;
 - `verificar(tipo)` olha o token atual sem consumi-lo, e é usado nas decisões;
 - a tradução da notação para Java segue sempre o mesmo padrão:
@@ -153,14 +162,14 @@ O `Main` traz 9 programas de exemplo, cada um com um comentário descrevendo o r
 | # | Resultado esperado |
 |---|---|
 | 1 | válido: usa tudo o que a gramática permite |
-| 2 | linha 3, coluna 5: esperado `;`, encontrado `if` |
+| 2 | linha 3, coluna 5: esperado `;`, encontrado `when` |
 | 3 | linha 3, coluna 15: caractere inválido `@` (erro léxico) |
-| 4 | linha 6, coluna 1: esperado `else`, encontrado `end` |
-| 5 | linha 2, coluna 9: esperado um nome de variável, encontrado `while` |
-| 6 | linha 3, coluna 10: esperado um operador de comparação, encontrado `)` |
+| 4 | linha 6, coluna 1: esperado `other`, encontrado `stop` |
+| 5 | linha 2, coluna 9: esperado um nome de variável, encontrado `loop` |
+| 6 | linha 3, coluna 12: esperado um operador de comparação, encontrado `)` |
 | 7 | linha 4, coluna 17: esperado um nome ou número, encontrado `;` |
-| 8 | válido: o menor programa possível (sem declarações e com blocos vazios) |
-| 9 | esperado `end`, mas o programa terminou |
+| 8 | válido: o menor programa possível, só `begin` e `stop` |
+| 9 | esperado `stop`, mas o programa terminou |
 
 ## Desafios enfrentados
 
@@ -170,12 +179,12 @@ O `Main` traz 9 programas de exemplo, cada um com um comentário descrevendo o r
 - **Símbolos de dois caracteres.** Exigiram olhar o próximo caractere antes de decidir e avançar duas posições, senão o segundo `=` era lido de novo como um token separado.
 - **Laços que não terminam.** Como o cursor só anda dentro de `avancar()`, todo caractere precisa cair em algum caso. Um caractere sem tratamento fazia o laço girar para sempre no mesmo lugar.
 - **Comparar textos.** `String` se compara com `equals`, e não com `==`, que só verifica se é o mesmo objeto.
-- **Fim inesperado do programa.** Quando falta o `end`, não existe token para apontar o erro. O `consumir` verifica primeiro se a lista acabou e gera uma mensagem própria para esse caso.
+- **Fim inesperado do programa.** Quando falta o `stop`, não existe token para apontar o erro. O `consumir` verifica primeiro se a lista acabou e gera uma mensagem própria para esse caso.
 - **Exceções.** Foi o primeiro contato com `throw`, `try` e `catch`, e com a diferença entre exceções que o Java obriga a tratar (como `IOException`, na leitura de arquivo) e as que não obriga (`RuntimeException`, base de `ErroLexico` e `ErroSintatico`).
 
 ## Limitações
 
-- O analisador faz apenas a verificação **sintática**: não confere tipos (como `double` recebendo um inteiro), nem se uma variável foi declarada antes de ser usada.
+- O analisador faz apenas a verificação **sintática**: não confere tipos (como `real` recebendo um inteiro), nem se uma variável foi declarada antes de ser usada.
 - A gramática não prevê números negativos (`-5`) nem parênteses dentro de expressões (`(1 + 2) * 3`).
-- `while` é reconhecido como palavra reservada, mas a estrutura definida no enunciado tem apenas um bloco `if-else`, então ele não é aceito como comando.
-- Por seguir o enunciado, o programa tem no máximo um `if-else`, sem `if` aninhado.
+- `loop` é reconhecido como palavra reservada, mas não é aceito como comando: a estrutura da linguagem tem no máximo um bloco *when-other*.
+- O programa tem no máximo um *when-other*, sem *when* aninhado.

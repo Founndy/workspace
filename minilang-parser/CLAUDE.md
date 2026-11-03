@@ -57,11 +57,11 @@ O objetivo é validar se um código-fonte está sintaticamente correto, de acord
 Notação: `"x"` = texto literal; nome sem aspas = outra regra; `[ ]` = opcional; `{ }` = zero ou mais; `|` = ou.
 
 ```
-programa     = "start" { declaracao } [ ifElse ] "end"
+programa     = "begin" { declaracao } [ whenOther ] "stop"
 declaracao   = tipo nome [ "=" valor ] ";"
-tipo         = "int" | "double"
+tipo         = "num" | "real"
 valor        = expressao
-ifElse       = "if" "(" condicao ")" bloco "else" bloco
+whenOther    = "when" "(" condicao ")" bloco "other" bloco
 bloco        = "{" { atribuicao } "}"
 atribuicao   = nome "=" expressao ";"
 condicao     = expressao operador expressao
@@ -103,8 +103,8 @@ Gramática sintática **completa**. Faltam só as regras **léxicas** de `nome` 
 4. **Mudança do professor:** `if`-`else` opcional. O `programa()` faz `if (verificar(TipoToken.IF)) ifElse();` e a gramática virou `programa = "start" { declaracao } [ ifElse ] "end"`. `"start end"` e `"start int y; end"` → válidos; `if` sem `else` continua erro (o `else` segue obrigatório quando há `if`).
 
 **Ainda em aberto:**
-5. **`if (x > 3)` com `x` nunca declarado é aceito** (ele classificou como erro, com o programa de exemplo das declarações `int y; double taxa = 2.5;`). Ressalva a discutir **antes** de corrigir: verificar se uma variável foi declarada é **análise semântica**, não sintática — exigiria uma tabela de símbolos (guardar os nomes declarados e consultar em cada uso). O enunciado pede "analisador sintático (parser)" e "validar se um código-fonte está sintaticamente correto", então isso **extrapola o escopo pedido**. Decisão dele: implementar mesmo assim (lista de nomes declarados + erro no uso de nome desconhecido) ou registrar como limitação conhecida, junto das outras já listadas.
-6. **Trocar as palavras reservadas por umas inventadas por ele** (ideia dele; o lembrete "INVENTAR O MEU PROPRIO" estava como comentário no `TipoToken.java`). **Ressalva:** o enunciado transcrito lista as reservadas como `int`, `double`, `if`, `else`, `while` — confirmar com o professor antes. Escopo da mudança, se for feita: os nomes das constantes do `TipoToken` podem ficar como estão (são tipos internos); o que muda é a comparação texto → tipo no `Lexer` (onde o lexema é comparado com `"int"`, `"double"` etc.), as descrições nas mensagens de erro (`"esperado 'if'"`), os 9 programas de teste do `Main`, a gramática escrita neste arquivo e o `README.md`. Pendente: ele definir quais palavras quer.
+5. **Decisão dele em 03/11: NÃO implementar — fica como limitação conhecida** (o README já diz que não confere se a variável foi declarada). Histórico: **`if (x > 3)` com `x` nunca declarado é aceito** (ele classificou como erro, com o programa de exemplo das declarações `int y; double taxa = 2.5;`). Ressalva a discutir **antes** de corrigir: verificar se uma variável foi declarada é **análise semântica**, não sintática — exigiria uma tabela de símbolos (guardar os nomes declarados e consultar em cada uso). O enunciado pede "analisador sintático (parser)" e "validar se um código-fonte está sintaticamente correto", então isso **extrapola o escopo pedido**. Decisão dele: implementar mesmo assim (lista de nomes declarados + erro no uso de nome desconhecido) ou registrar como limitação conhecida, junto das outras já listadas.
+6. **Palavras reservadas próprias — FEITO em 03/11** (escolha dele, a coluna "curto, estilo código"): `start`→`begin`, `end`→`stop`, `int`→`num`, `double`→`real`, `if`→`when`, `else`→`other`, `while`→`loop`. Mudou tudo: constantes do `TipoToken` (`BEGIN`, `STOP`, `NUM`, `REAL`, `WHEN`, `OTHER`, `LOOP`), comparações no `Lexer`, descrições das mensagens no `Parser`, o método `ifElse()` virou `whenOther()` (e a regra da gramática também), os 9 programas do `Main` e o `README.md`. Programa 6 passou a dar coluna 12 (`when` tem 2 letras a mais que `if`); programa 8 virou só `begin`/`stop` (o menor válido agora que o when-other é opcional). Os 9 batem ✅. As palavras antigas aparecem neste arquivo só no histórico.
 
 Menores corrigidos em 20/10: `analisar()` do `Lexer` agora zera `pos`/`linha`/`coluna` no início (antes, a 2ª chamada devolvia lista vazia); removidos o `= new ArrayList<>()` e o import sem uso do `Parser`. Fica como está (decisão): nomes com acento são aceitos (`Character.isLetter` é Unicode). Limites da gramática (decisão, não bug): sem negativos, sem parênteses em expressão, sem `if` aninhado, `while` não aceito como comando.
 - Histórico do pedaço 3 — antes: **Parou aqui em 19/10 — próximo: letras.** Já explicado a ele: guardar `pos`/`coluna` do início, `while` interno com `pos < length()` antes do `charAt` e `Character.isLetterOrDigit`, recortar com `substring(inicio, pos)`, comparar `String` com `.equals()` (não `==`), reservadas × `IDENTIFICADOR`, token com a coluna do início. Teste combinado: `"start int while taxa x1 end"` → `START 1:1`, `INT 1:7`, `WHILE 1:11`, `IDENTIFICADOR 1:17`, `IDENTIFICADOR 1:22`, `END 1:25`. Depois: números (com ponto), aí o erro léxico com exceção.
