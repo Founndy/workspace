@@ -4,6 +4,39 @@ Analisador sintático (parser) em Java para uma linguagem imperativa simplificad
 
 **Ritmo lento (pedido dele em 14/10):** voltar ao modelo do começo do aeroporto — ele escreve o código; guiar com perguntas, explicar conceitos com exemplos fora do domínio e revisar. Sem esqueletos prontos do próprio parser. Continua valendo a exceção da raiz: erros de digitação e de sintaxe pequenos (chave, `;`, parêntese) podem ser corrigidos direto, só avisando.
 
+## Mudanças de 09/11 — LER PRIMEIRO (vale sobre o que está abaixo)
+
+Motivo: cerca de 9 apresentações de colegas vieram antes da dele e estavam ~90% iguais ao projeto (código e slides), porque todos usam IA. Ele pediu para diferenciar com mudanças **simples**. A apresentação é em **10/11**.
+
+**Renomes aplicados em 09/11 (feitos pelo Claude, a pedido; os 9 exemplos seguem batendo):**
+
+| Antes | Agora |
+|---|---|
+| `Token` | `Peca` |
+| `TipoToken` | `Categoria` |
+| `Lexer` | `Separador` |
+| `Parser` | `Revisor` |
+| `ErroLexico` | `ErroDeEscrita` |
+| `ErroSintatico` | `ErroDeEstrutura` |
+| `consumir` | `exigir` |
+| `verificar` | `aVezEhDe` |
+
+Ficaram como estavam, por decisão dele: `Main` e `espiar`. As palavras da linguagem (`begin`, `stop`, `num`, `real`, `when`, `other`, `loop`) não mudaram. Variáveis locais acompanharam (`tokens` → `pecas`, `lexer` → `separador`, `parser` → `revisor`).
+
+**O resto deste arquivo e o `README.md` ainda usam os nomes antigos** — ler com a tabela acima. O `README.md` precisa ser atualizado.
+
+**Pendente para 10/11 (ele implementa, com guia, no ritmo de sempre):** trocar a escada de `if` das palavras reservadas no `Separador` por um `Map<String, Categoria> reservadas`. Formato combinado, que já está no slide 5 do deck novo:
+```java
+reservadas.put("when", Categoria.WHEN);          // uma linha por palavra, no construtor
+Categoria categoria = reservadas.get(palavra);
+if (categoria == null) {
+    categoria = Categoria.IDENTIFICADOR;
+}
+```
+`Map` já foi explicado a ele com a analogia da agenda de contatos (`put` guarda, `get` consulta, `null` = não está). Descartado por falta de tempo: peças sob demanda (iterador) e listar vários erros.
+
+**Slides:** o deck antigo ("MiniLang Parser") foi rejeitado por ter cara de IA. O novo é "O revisor de programas": https://claude.ai/artifact/AyBczAXGJckiR5TTK2v1M5 — 11 slides, visual de texto datilografado revisado a caneta (vermelho = erro, azul = explicação), sem seções numeradas, cartões, listas nem rodapé. Usa os nomes novos e já mostra o `Map`. Ele mandou tirar o slide sobre a variável não declarada (não quer expor limite do trabalho); a resposta ficou só nas notas do último slide.
+
 ## Enunciado da atividade (transcrição fiel do PDF, que não foi publicado)
 
 **Analisador Sintático**
