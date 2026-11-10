@@ -29,7 +29,7 @@ public class Main {
                 """;
 
         // PROGRAMA 2 - deve FALHAR: falta o ';' no fim da declaracao da linha 2.
-        // O parser so percebe ao chegar no proximo token (o 'when' da linha 3).
+        // O revisor so percebe ao chegar na proxima peca (o 'when' da linha 3).
         // Esperado: linha 3, coluna 5: esperado ';', encontrado 'when'
         String programa2 = """
                 begin
@@ -42,7 +42,7 @@ public class Main {
                 stop
                 """;
 
-        // PROGRAMA 3 - deve FALHAR no LEXICO (antes de chegar no parser):
+        // PROGRAMA 3 - deve FALHAR no LEXICO (antes de chegar no revisor):
         // o '@' nao e um simbolo da MiniLang.
         // Esperado: linha 3, coluna 15: caractere invalido '@'
         String programa3 = """
@@ -58,7 +58,7 @@ public class Main {
                 """;
 
         // PROGRAMA 4 - deve FALHAR: falta o 'other' (quando ha 'when', ele e obrigatorio).
-        // Depois do bloco do 'when', o parser espera 'other' e encontra 'stop'.
+        // Depois do bloco do 'when', o revisor espera 'other' e encontra 'stop'.
         // Esperado: linha 6, coluna 1: esperado 'other', encontrado 'stop'
         String programa4 = """
                 begin
@@ -70,7 +70,7 @@ public class Main {
                 """;
 
         // PROGRAMA 5 - deve FALHAR: 'loop' e palavra reservada, nao pode ser nome de variavel.
-        // O lexico gera um token LOOP (e nao IDENTIFICADOR), entao a declaracao quebra.
+        // O lexico gera uma peca LOOP (e nao IDENTIFICADOR), entao a declaracao quebra.
         // Esperado: linha 2, coluna 9: esperado um nome de variavel, encontrado 'loop'
         String programa5 = """
                 begin
@@ -84,7 +84,7 @@ public class Main {
                 """;
 
         // PROGRAMA 6 - deve FALHAR: a condicao do 'when' nao tem operador de comparacao.
-        // Depois do 'x', o parser espera ==, !=, <, >, <= ou >= e encontra ')'.
+        // Depois do 'x', o revisor espera ==, !=, <, >, <= ou >= e encontra ')'.
         // Esperado: linha 3, coluna 12: esperado um operador de comparacao, encontrado ')'
         String programa6 = """
                 begin
@@ -98,7 +98,7 @@ public class Main {
                 """;
 
         // PROGRAMA 7 - deve FALHAR: a expressao termina num operador ('x +' sem nada depois).
-        // Depois do '+', o parser espera um nome ou um numero e encontra ';'.
+        // Depois do '+', o revisor espera um nome ou um numero e encontra ';'.
         // Esperado: linha 4, coluna 17: esperado um nome ou numero, encontrado ';'
         String programa7 = """
                 begin
@@ -119,7 +119,7 @@ public class Main {
                 """;
 
         // PROGRAMA 9 - deve FALHAR: falta o 'stop' no final.
-        // O parser chega ao fim dos tokens sem encontrar 'stop'.
+        // O revisor chega ao fim das pecas sem encontrar 'stop'.
         // Esperado: esperado 'stop', mas o programa terminou
         String programa9 = """
                 begin
@@ -192,14 +192,14 @@ public class Main {
 
     static void analisar(String texto) {
         try {
-            Lexer lexer = new Lexer(texto);
-            List<Token> tokens = lexer.analisar();
-            Parser parser = new Parser(tokens);
-            parser.programa();
+            Separador separador = new Separador(texto);
+            List<Peca> pecas = separador.analisar();
+            Revisor revisor = new Revisor(pecas);
+            revisor.programa();
             System.out.println("Programa valido!");
-        } catch (ErroLexico e) {
+        } catch (ErroDeEscrita e) {
             System.out.println(e.getMessage());
-        } catch (ErroSintatico e) {
+        } catch (ErroDeEstrutura e) {
             System.out.println(e.getMessage());
         }
     }

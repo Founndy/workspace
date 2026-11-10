@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Lexer {
+public class Separador {
 
     private String programa;
     private int linha = 1;
@@ -9,16 +9,16 @@ public class Lexer {
     private int pos = 0;
 
 
-    Lexer(String programa) {
+    Separador(String programa) {
         this.programa = programa;
     }
 
 
-    List<Token> analisar() {
+    List<Peca> analisar() {
         pos = 0;
         linha = 1;
         coluna = 1;
-        List<Token> tokens = new ArrayList<>();
+        List<Peca> pecas = new ArrayList<>();
 
         while (pos < programa.length()) {
 
@@ -26,66 +26,68 @@ public class Lexer {
             if (c == '\n') {
                 avancarLinha();
             } else if (c == ';') {
-                tokens.add(new Token(TipoToken.PONTO_VIRGULA, ";", linha, coluna));
+                pecas.add(new Peca(Categoria.PONTO_VIRGULA, ";", linha, coluna));
                 avancar();
-            } else if (c == ' ' || c == '\t' || c == '\r'){
+            } else if (c == ' ' || c == '\t' || c == '\r') {
                 avancar();
             } else if (c == '(') {
-                tokens.add(new Token(TipoToken.ABRE_PARENTESES, "(", linha, coluna));
+                pecas.add(new Peca(Categoria.ABRE_PARENTESES, "(", linha, coluna));
                 avancar();
             } else if (c == ')') {
-                tokens.add(new Token(TipoToken.FECHA_PARENTESES, ")", linha, coluna));
+                pecas.add(new Peca(Categoria.FECHA_PARENTESES, ")", linha, coluna));
                 avancar();
             } else if (c == '{') {
-                tokens.add(new Token(TipoToken.ABRE_CHAVES, "{", linha, coluna));
+                pecas.add(new Peca(Categoria.ABRE_CHAVES, "{", linha, coluna));
                 avancar();
             } else if (c == '}') {
-                tokens.add(new Token(TipoToken.FECHA_CHAVES, "}", linha, coluna));
+                pecas.add(new Peca(Categoria.FECHA_CHAVES, "}", linha, coluna));
                 avancar();
             } else if (c == '+') {
-                tokens.add(new Token(TipoToken.MAIS, "+", linha, coluna));
+                pecas.add(new Peca(Categoria.MAIS, "+", linha, coluna));
                 avancar();
             } else if (c == '-') {
-                tokens.add(new Token(TipoToken.MENOS, "-", linha, coluna));
+                pecas.add(new Peca(Categoria.MENOS, "-", linha, coluna));
                 avancar();
             } else if (c == '*') {
-                tokens.add(new Token(TipoToken.MULTIPLICA, "*", linha, coluna));
+                pecas.add(new Peca(Categoria.MULTIPLICA, "*", linha, coluna));
                 avancar();
             } else if (c == '/') {
-                tokens.add(new Token(TipoToken.DIVISAO, "/", linha, coluna));
+                pecas.add(new Peca(Categoria.DIVISAO, "/", linha, coluna));
                 avancar();
             } else if (c == '=') {
-                if(espiar() == '='){
-                tokens.add(new Token(TipoToken.COMPARATIVO_IGUAL, "==", linha, coluna));
-                avancar();
-                avancar();
-                }else{
-                    tokens.add(new Token(TipoToken.SINAL_RECEBE, "=", linha, coluna));
-                    avancar();
-                }
-            } else if (c == '<') {
-                if(espiar() == '='){
-                    tokens.add(new Token(TipoToken.COMPARATIVO_MENOR_IGUAL, "<=", linha, coluna));
-                    avancar();
-                    avancar();
-                } else{
-                tokens.add(new Token(TipoToken.COMPARATIVO_MENOR, "<", linha, coluna));
-                avancar();}
-            } else if (c == '>') {
-                if(espiar() == '='){
-                    tokens.add(new Token(TipoToken.COMPARATIVO_MAIOR_IGUAL, ">=", linha, coluna));
-                    avancar();
-                    avancar();
-                } else{
-                tokens.add(new Token(TipoToken.COMPARATIVO_MAIOR, ">", linha, coluna));
-                avancar();}
-            } else if (c == '!') {
-                if(espiar() == '='){
-                    tokens.add(new Token(TipoToken.COMPARATIVO_DIFERENTE, "!=", linha, coluna));
+                if (espiar() == '=') {
+                    pecas.add(new Peca(Categoria.COMPARATIVO_IGUAL, "==", linha, coluna));
                     avancar();
                     avancar();
                 } else {
-               throw new ErroLexico("linha " + linha + ", coluna " + coluna + ": caractere invalido '" + c + "'");
+                    pecas.add(new Peca(Categoria.SINAL_RECEBE, "=", linha, coluna));
+                    avancar();
+                }
+            } else if (c == '<') {
+                if (espiar() == '=') {
+                    pecas.add(new Peca(Categoria.COMPARATIVO_MENOR_IGUAL, "<=", linha, coluna));
+                    avancar();
+                    avancar();
+                } else {
+                    pecas.add(new Peca(Categoria.COMPARATIVO_MENOR, "<", linha, coluna));
+                    avancar();
+                }
+            } else if (c == '>') {
+                if (espiar() == '=') {
+                    pecas.add(new Peca(Categoria.COMPARATIVO_MAIOR_IGUAL, ">=", linha, coluna));
+                    avancar();
+                    avancar();
+                } else {
+                    pecas.add(new Peca(Categoria.COMPARATIVO_MAIOR, ">", linha, coluna));
+                    avancar();
+                }
+            } else if (c == '!') {
+                if (espiar() == '=') {
+                    pecas.add(new Peca(Categoria.COMPARATIVO_DIFERENTE, "!=", linha, coluna));
+                    avancar();
+                    avancar();
+                } else {
+                    throw new ErroDeEscrita("linha " + linha + ", coluna " + coluna + ": caractere invalido '" + c + "'");
                 }
             } else if (Character.isLetter(c)) {
                 int cP = pos;
@@ -97,21 +99,21 @@ public class Lexer {
                 String palavra = programa.substring(cP, pos);
 
                 if (palavra.equals("num")) {
-                    tokens.add(new Token(TipoToken.NUM, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.NUM, palavra, linha, colunaCP));
                 } else if (palavra.equals("begin")) {
-                    tokens.add(new Token(TipoToken.BEGIN, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.BEGIN, palavra, linha, colunaCP));
                 } else if (palavra.equals("stop")) {
-                    tokens.add(new Token(TipoToken.STOP, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.STOP, palavra, linha, colunaCP));
                 } else if (palavra.equals("real")) {
-                    tokens.add(new Token(TipoToken.REAL, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.REAL, palavra, linha, colunaCP));
                 } else if (palavra.equals("when")) {
-                    tokens.add(new Token(TipoToken.WHEN, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.WHEN, palavra, linha, colunaCP));
                 } else if (palavra.equals("other")) {
-                    tokens.add(new Token(TipoToken.OTHER, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.OTHER, palavra, linha, colunaCP));
                 } else if (palavra.equals("loop")) {
-                    tokens.add(new Token(TipoToken.LOOP, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.LOOP, palavra, linha, colunaCP));
                 } else {
-                    tokens.add(new Token(TipoToken.IDENTIFICADOR, palavra, linha, colunaCP));
+                    pecas.add(new Peca(Categoria.IDENTIFICADOR, palavra, linha, colunaCP));
                 }
             } else if (Character.isDigit(c)) {
                 int cP = pos;
@@ -130,15 +132,13 @@ public class Lexer {
                     }
                 }
                 String numero = programa.substring(cP, pos);
-                tokens.add(new Token(TipoToken.NUMERO, numero, linha, colunaCP));
-            }
-
-            else {
-                throw new ErroLexico("linha " + linha + ", coluna " + coluna + ": caractere invalido '" + c + "'");
+                pecas.add(new Peca(Categoria.NUMERO, numero, linha, colunaCP));
+            } else {
+                throw new ErroDeEscrita("linha " + linha + ", coluna " + coluna + ": caractere invalido '" + c + "'");
             }
 
         }
-        return tokens;
+        return pecas;
     }
 
     char espiar() {

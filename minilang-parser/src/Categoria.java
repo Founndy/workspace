@@ -1,4 +1,4 @@
-public enum TipoToken {
+public enum Categoria {
     // inicio e fim do programa
     BEGIN,
     STOP,
@@ -34,7 +34,7 @@ public enum TipoToken {
     COMPARATIVO_MAIOR_IGUAL,
     COMPARATIVO_MENOR_IGUAL,
 
-    // valores variaveis (o texto muda a cada token)
+    // valores variaveis (o texto muda a cada peca)
     IDENTIFICADOR,
     NUMERO
 }
