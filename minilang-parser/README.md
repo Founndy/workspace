@@ -87,46 +87,46 @@ Decisões da linguagem:
 ## Arquitetura
 
 ```
-texto do programa → Lexer → lista de tokens → Parser → "Programa valido!" ou erro
+texto do programa → Separador → lista de peças → Revisor → "Programa valido!" ou erro
 ```
 
 O trabalho é dividido em duas etapas, cada uma com uma responsabilidade:
 
-1. **Análise léxica (`Lexer`)**: lê o texto caractere por caractere e o transforma numa lista de *tokens* (palavras reservadas, nomes, números e símbolos), registrando a linha e a coluna de cada um. Ela não sabe se a ordem dos tokens faz sentido.
-2. **Análise sintática (`Parser`)**: percorre a lista de tokens e confere se a sequência segue a gramática.
+1. **Análise léxica (`Separador`)**: lê o texto caractere por caractere e o transforma numa lista de *peças* (tokens) (palavras reservadas, nomes, números e símbolos), registrando a linha e a coluna de cada um. Ela não sabe se a ordem das peças faz sentido.
+2. **Análise sintática (`Revisor`)**: percorre a lista de peças e confere se a sequência segue a gramática.
 
 ### Classes
 
 | Classe | Responsabilidade |
 |---|---|
-| `TipoToken` | enum com os 25 tipos de token, agrupados por categoria |
-| `Token` | um token encontrado no código: tipo, texto, linha e coluna (imutável, só getters) |
-| `Lexer` | transforma o texto em `List<Token>` |
-| `Parser` | valida a lista de tokens contra a gramática |
-| `ErroLexico` | exceção para caractere inválido |
-| `ErroSintatico` | exceção para token fora do lugar ou programa incompleto |
+| `Categoria` | enum com as 25 categorias de peça |
+| `Peca` | uma peça (token) encontrada no código: tipo, texto, linha e coluna (imutável, só getters) |
+| `Separador` | transforma o texto em `List<Peca>` |
+| `Revisor` | valida a lista de peças contra a gramática |
+| `ErroDeEscrita` | exceção para caractere inválido |
+| `ErroDeEstrutura` | exceção para peça fora do lugar ou programa incompleto |
 | `Main` | menu e os 9 programas de teste |
 
 ### Métodos e técnicas
 
-**No `Lexer`:**
+**No `Separador`:**
 - um `while` percorre o texto com um cursor (`pos`), mantendo `linha` e `coluna` como **atributos**. Assim, os métodos auxiliares `avancar()` e `avancarLinha()` conseguem alterá-los;
 - `espiar()` olha o próximo caractere sem avançar. É o que diferencia `=` de `==`, `<` de `<=`, `>` de `>=` e reconhece o `!=`;
-- palavras e números são lidos com um laço interno e recortados com `substring`. As palavras são comparadas com `equals` para separar as reservadas dos nomes de variável (`IDENTIFICADOR`);
+- palavras e números são lidos com um laço interno e recortados com `substring`. As palavras reservadas ficam num `Map<String, Categoria>`: o `get` devolve a categoria da palavra, e quando devolve `null` ela é um nome de variável (`IDENTIFICADOR`);
 - um número aceita um único ponto decimal, e só se houver um dígito depois dele;
-- qualquer caractere fora da linguagem lança `ErroLexico`.
+- qualquer caractere fora da linguagem lança `ErroDeEscrita`.
 
-**No `Parser`**, com a técnica de **descida recursiva**, em que cada regra da gramática vira um método (`programa()`, `declaracao()`, `whenOther()`, `condicao()`, `bloco()`, `atribuicao()`, `expressao()`, `termo()`, `operador()`):
-- `consumir(tipo, descricao)` exige que o token atual seja de um tipo. Se for, avança. Se não for, lança `ErroSintatico` com a linha, a coluna e o texto encontrado. Também detecta quando a lista acaba antes da hora;
-- `verificar(tipo)` olha o token atual sem consumi-lo, e é usado nas decisões;
+**No `Revisor`**, com a técnica de **descida recursiva**, em que cada regra da gramática vira um método (`programa()`, `declaracao()`, `whenOther()`, `condicao()`, `bloco()`, `atribuicao()`, `expressao()`, `termo()`, `operador()`):
+- `exigir(categoria, descricao)` exige que a peça atual seja de uma categoria. Se for, avança. Se não for, lança `ErroDeEstrutura` com a linha, a coluna e o texto encontrado. Também detecta quando a lista acaba antes da hora;
+- `aVezEhDe(categoria)` olha a peça atual sem consumi-la, e é usado nas decisões;
 - a tradução da notação para Java segue sempre o mesmo padrão:
 
 | Gramática | Java |
 |---|---|
-| texto literal | `consumir(...)` |
+| texto literal | `exigir(...)` |
 | outra regra | chamada do método da regra |
-| `{ ... }` | `while (verificar(...))` |
-| `[ ... ]` | `if (verificar(...))` |
+| `{ ... }` | `while (aVezEhDe(...))` |
+| `[ ... ]` | `if (aVezEhDe(...))` |
 | `a \| b` | `if / else` |
 
 **No `Main`:**
@@ -174,13 +174,13 @@ O `Main` traz 9 programas de exemplo, cada um com um comentário descrevendo o r
 ## Desafios enfrentados
 
 - **Ler e escrever a gramática.** A notação parece simples, mas os símbolos têm significados precisos. Foi fácil usar `[ ]` como "aqui vai algo" (ele significa "opcional") e `{ }` como agrupador (ele significa "zero ou mais vezes"). O que ajudou foi **testar cada regra** com um texto que deveria passar e outro que deveria falhar.
-- **Contar linha e coluna.** Só o `\n` muda de linha; o `;` termina uma instrução, mas não a linha. O token precisa guardar a coluna de onde **começa**, então ela é registrada antes de avançar.
+- **Contar linha e coluna.** Só o `\n` muda de linha; o `;` termina uma instrução, mas não a linha. A peça precisa guardar a coluna de onde **começa**, então ela é registrada antes de avançar.
 - **Passagem por valor.** Os primeiros métodos auxiliares recebiam `linha` e `coluna` como parâmetro e alteravam apenas cópias. A solução foi tornar o estado do léxico (`pos`, `linha`, `coluna`) **atributos** da classe.
-- **Símbolos de dois caracteres.** Exigiram olhar o próximo caractere antes de decidir e avançar duas posições, senão o segundo `=` era lido de novo como um token separado.
+- **Símbolos de dois caracteres.** Exigiram olhar o próximo caractere antes de decidir e avançar duas posições, senão o segundo `=` era lido de novo como uma peça separada.
 - **Laços que não terminam.** Como o cursor só anda dentro de `avancar()`, todo caractere precisa cair em algum caso. Um caractere sem tratamento fazia o laço girar para sempre no mesmo lugar.
 - **Comparar textos.** `String` se compara com `equals`, e não com `==`, que só verifica se é o mesmo objeto.
-- **Fim inesperado do programa.** Quando falta o `stop`, não existe token para apontar o erro. O `consumir` verifica primeiro se a lista acabou e gera uma mensagem própria para esse caso.
-- **Exceções.** Foi o primeiro contato com `throw`, `try` e `catch`, e com a diferença entre exceções que o Java obriga a tratar (como `IOException`, na leitura de arquivo) e as que não obriga (`RuntimeException`, base de `ErroLexico` e `ErroSintatico`).
+- **Fim inesperado do programa.** Quando falta o `stop`, não existe peça para apontar o erro. O `exigir` verifica primeiro se a lista acabou e gera uma mensagem própria para esse caso.
+- **Exceções.** Foi o primeiro contato com `throw`, `try` e `catch`, e com a diferença entre exceções que o Java obriga a tratar (como `IOException`, na leitura de arquivo) e as que não obriga (`RuntimeException`, base de `ErroDeEscrita` e `ErroDeEstrutura`).
 
 ## Limitações
 
