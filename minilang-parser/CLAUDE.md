@@ -25,7 +25,7 @@ Ficaram como estavam, por decisão dele: `Main` e `espiar`. As palavras da lingu
 
 **O resto deste arquivo e o `README.md` ainda usam os nomes antigos** — ler com a tabela acima. O `README.md` precisa ser atualizado.
 
-**Pendente para 10/11 (ele implementa, com guia, no ritmo de sempre):** trocar a escada de `if` das palavras reservadas no `Separador` por um `Map<String, Categoria> reservadas`. Formato combinado, que já está no slide 5 do deck novo:
+**Feito em 10/11 (9 testes passando):** trocada a escada de `if` das palavras reservadas no `Separador` por um `Map<String, Categoria> reservadas`. Formato combinado, que já está no slide 5 do deck novo:
 ```java
 reservadas.put("when", Categoria.WHEN);          // uma linha por palavra, no construtor
 Categoria categoria = reservadas.get(palavra);

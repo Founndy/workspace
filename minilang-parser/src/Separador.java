@@ -1,5 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Separador {
 
@@ -7,10 +9,18 @@ public class Separador {
     private int linha = 1;
     private int coluna = 1;
     private int pos = 0;
+    private Map<String, Categoria> reservadas = new HashMap<>();
 
 
     Separador(String programa) {
         this.programa = programa;
+        reservadas.put("when", Categoria.WHEN);
+        reservadas.put("begin", Categoria.BEGIN);
+        reservadas.put("stop", Categoria.STOP);
+        reservadas.put("num", Categoria.NUM);
+        reservadas.put("real", Categoria.REAL);
+        reservadas.put("other", Categoria.OTHER);
+        reservadas.put("loop", Categoria.LOOP);
     }
 
 
@@ -97,24 +107,12 @@ public class Separador {
                     avancar();
                 }
                 String palavra = programa.substring(cP, pos);
+                Categoria categoria = reservadas.get(palavra);
 
-                if (palavra.equals("num")) {
-                    pecas.add(new Peca(Categoria.NUM, palavra, linha, colunaCP));
-                } else if (palavra.equals("begin")) {
-                    pecas.add(new Peca(Categoria.BEGIN, palavra, linha, colunaCP));
-                } else if (palavra.equals("stop")) {
-                    pecas.add(new Peca(Categoria.STOP, palavra, linha, colunaCP));
-                } else if (palavra.equals("real")) {
-                    pecas.add(new Peca(Categoria.REAL, palavra, linha, colunaCP));
-                } else if (palavra.equals("when")) {
-                    pecas.add(new Peca(Categoria.WHEN, palavra, linha, colunaCP));
-                } else if (palavra.equals("other")) {
-                    pecas.add(new Peca(Categoria.OTHER, palavra, linha, colunaCP));
-                } else if (palavra.equals("loop")) {
-                    pecas.add(new Peca(Categoria.LOOP, palavra, linha, colunaCP));
-                } else {
-                    pecas.add(new Peca(Categoria.IDENTIFICADOR, palavra, linha, colunaCP));
+                if (categoria == null) {
+                    categoria = Categoria.IDENTIFICADOR;
                 }
+                pecas.add(new Peca(categoria, palavra, linha, colunaCP));
             } else if (Character.isDigit(c)) {
                 int cP = pos;
                 int colunaCP = coluna;
