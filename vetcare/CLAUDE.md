@@ -9,9 +9,9 @@ Trabalho final da disciplina de POO: **VetCare**, sistema de gestão de clínica
 - 13/11: pasta criada só com a especificação. Nenhum código ainda.
 - O trabalho segue as **etapas da seção 9** da especificação, parando ao fim de cada uma até ele dizer "pode seguir".
 
-## Decidir antes da Etapa 1
+## Modo de trabalho (decidido por ele em 13/11)
 
-A especificação pede que o projeto seja implementado por etapas, mas a regra da raiz deste repositório é de sessão de aprendizado (ele codifica, o Claude guia). Perguntar a ele qual modo vale para este trabalho final antes de escrever qualquer código.
+**Modo aprendizado**, como nos outros projetos: ele escreve o código, o Claude guia, explica e revisa (regras do `CLAUDE.md` da raiz). As etapas da seção 9 da especificação servem de roteiro, uma por vez; o Claude não implementa as etapas por ele.
 
 ## Estrutura prevista (seção 4)
 

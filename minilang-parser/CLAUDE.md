@@ -23,7 +23,7 @@ Motivo: cerca de 9 apresentações de colegas vieram antes da dele e estavam ~90
 
 Ficaram como estavam, por decisão dele: `Main` e `espiar`. As palavras da linguagem (`begin`, `stop`, `num`, `real`, `when`, `other`, `loop`) não mudaram. Variáveis locais acompanharam (`tokens` → `pecas`, `lexer` → `separador`, `parser` → `revisor`).
 
-**O resto deste arquivo e o `README.md` ainda usam os nomes antigos** — ler com a tabela acima. O `README.md` precisa ser atualizado.
+**O resto deste arquivo ainda usa os nomes antigos** — ler com a tabela acima. O `README.md` já foi atualizado com os nomes novos e o `Map` (10/11).
 
 **Feito em 10/11 (9 testes passando):** trocada a escada de `if` das palavras reservadas no `Separador` por um `Map<String, Categoria> reservadas`. Formato combinado, que já está no slide 5 do deck novo:
 ```java
