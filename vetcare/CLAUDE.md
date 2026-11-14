@@ -19,8 +19,9 @@ Trabalho final da disciplina de POO: **VetCare**, sistema de gestão de clínica
 
 ## Andamento
 
-- **Etapa 1 (13/11), parte pronta:** `StatusAtendimento` (enum), `DadoInvalidoException` e `OperacaoInvalidaException` (herdam de `RuntimeException`), interfaces `Pagavel` e `Agendavel`. Compila. Falta o `Formatador` (pacote `vetcare.util`), que é a parte mais nova: classe utilitária com construtor `private` e métodos `static`, `NumberFormat`, `DateTimeFormatter`. Explicar antes de ele escrever.
-- Conceitos já explicados nesta etapa: pacote (`package` + pasta) e `import`; por que as exceções são *unchecked* (quem chama não é obrigado a `try/catch`; só o `Main`/menu captura); como escrever uma interface (métodos sem corpo, já `public` e abstratos; quem implementa usa `implements` + `@Override`, e esquecer um método não compila).
+- **Etapa 1 CONCLUÍDA (13/11):** `StatusAtendimento` (enum), `DadoInvalidoException` e `OperacaoInvalidaException` (herdam de `RuntimeException`), interfaces `Pagavel` e `Agendavel`, `Formatador` (construtor `private`, métodos `static`; `moeda` → "R$ 150,00", `dataHora` → "dd/MM/yyyy HH:mm", `data` → "dd/MM/yyyy", nulo → "sem data"). Compila e foi testado. **Próximo: etapa 2 (Pessoa, Tutor, Veterinario).**
+- Conceitos já explicados na etapa 1: pacote (`package` + pasta) e `import`; por que as exceções são *unchecked* (quem chama não é obrigado a `try/catch`; só o `Main`/menu captura); como escrever uma interface (métodos sem corpo, já `public` e abstratos; quem implementa usa `implements` + `@Override`, e esquecer um método não compila); `static` (método da classe, chamado sem objeto) e construtor `private` em classe utilitária; `NumberFormat`/`Locale`; `DateTimeFormatter` e as armadilhas `MM` × `mm` e `dd` × `DD` (dia do ano: 317); `throw` precisa de `new`; texto entre aspas × código (`pt-BR` sem aspas virou subtração).
+- **Bug escondido para a etapa 7 (testes):** o `NumberFormat` pt-BR põe um espaço inquebrável (caractere 160) depois do `R$`. Comparar com `"R$ 150,00"` digitado dá `false`. Já avisado a ele.
 - Ambiente: módulo `vetcare.iml` com `src` como fonte. O pacote foi criado por engano como `vercare` e corrigido para `vetcare`.
 
 ## Estrutura prevista (seção 4)
