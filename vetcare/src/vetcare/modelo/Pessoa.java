@@ -64,7 +64,7 @@ public abstract class Pessoa {
     }
 
     private String validarNome(String nome){
-        if(nome == null || nome.isBlank() || nome.isEmpty()){
+        if(nome == null || nome.isBlank()){
             throw new DadoInvalidoException("Nome Invalido!");
         }
         return nome.trim();
