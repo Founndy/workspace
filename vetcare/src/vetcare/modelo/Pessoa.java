@@ -44,23 +44,17 @@ public abstract class Pessoa {
     }
 
     private String validarNome(String nome){
-        int i = 0;
-        while(i > nome.length()){
-        char c =  nome.charAt(i);
-        if(c.isEmpty()){
-
+        if(nome == null || nome.isBlank() || nome.isEmpty()){
+            throw new DadoInvalidoException("Nome Invalido!");
         }
-        if(!Character.isAlphabetic(c)){
-
-        }
-    }
-        return nome;
+        return nome.trim();
     }
 
     private String normalizarCpf(String cpf){
         int i = 0;
-        while(i > cpf.length()){
-
+        while(i < cpf.length()){
+            
+            i++;
         }
         return cpf;
     }
