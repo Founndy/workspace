@@ -1,5 +1,7 @@
 package vetcare.modelo;
 
+import vetcare.excecao.DadoInvalidoException;
+
 public abstract class Pessoa {
     private String nome;
     private final String cpf;
@@ -7,34 +9,60 @@ public abstract class Pessoa {
 
 
     Pessoa(String nome, String cpf,String telefone) {
-        this.nome = setNome(nome);
-        this.cpf = cpf;
+        this.nome = validarNome(nome);
+        this.cpf = normalizarCpf(cpf);
         this.telefone = telefone;
     }
-    String getNome() {
+
+    Pessoa(String nome, String cpf) {
+        this.nome = validarNome(nome);
+        this.cpf = normalizarCpf(cpf);
+    }
+    
+    public String getNome() {
         return nome;
     }
-    String getCpf() {
+    public String getCpf() {
         return cpf;
     }
-    String getTelefone() {
+    public String getTelefone() {
         return telefone;
     }
 
-    void setNome(String nome){
-        if(nome.isBlank() || nome == null){
-            System.out.println("Nome invalido!");
-            return;
+    public void setNome(String nome){
+        if(nome == null || nome.isBlank()){
+            throw new DadoInvalidoException("Dado Invalido detectado,programa finalizado!");
         }
         this.nome = nome;
     }
 
-    void setTelefone(String telefone){
+    public void setTelefone(String telefone){
         if(telefone == null || telefone.isBlank()){
-            System.out.println("telefone invalido!");
-            return;
+            throw new DadoInvalidoException("Dado Invalido detectado,programa finalizado!");
         }
         this.telefone = telefone;
+    }
+
+    private String validarNome(String nome){
+        int i = 0;
+        while(i > nome.length()){
+        char c =  nome.charAt(i);
+        if(c.isEmpty()){
+
+        }
+        if(!Character.isAlphabetic(c)){
+
+        }
+    }
+        return nome;
+    }
+
+    private String normalizarCpf(String cpf){
+        int i = 0;
+        while(i > cpf.length()){
+
+        }
+        return cpf;
     }
 
 
