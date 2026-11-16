@@ -51,12 +51,39 @@ public abstract class Pessoa {
     }
 
     private String normalizarCpf(String cpf){
+        if(cpf == null){
+            throw new DadoInvalidoException("O CPF é obrigatório.");
+        }
+
+        // junta só os dígitos: "111.222.333-44" vira "11122233344"
+        String digitos = "";
         int i = 0;
         while(i < cpf.length()){
-            
+            char c = cpf.charAt(i);
+            if(Character.isDigit(c)){
+                digitos = digitos + c;
+            }
             i++;
         }
-        return cpf;
+
+        if(digitos.length() != 11){
+            throw new DadoInvalidoException("O CPF deve ter 11 dígitos.");
+        }
+
+        // recusa CPF com todos os dígitos iguais, como "111.111.111-11"
+        boolean todosIguais = true;
+        i = 1;
+        while(i < digitos.length()){
+            if(digitos.charAt(i) != digitos.charAt(0)){
+                todosIguais = false;
+            }
+            i++;
+        }
+        if(todosIguais){
+            throw new DadoInvalidoException("CPF inválido: todos os dígitos são iguais.");
+        }
+
+        return digitos;
     }
 
 
