@@ -4,13 +4,15 @@ public class Tutor extends Pessoa{
 
     public Tutor(String nome, String cpf,String telefone){
         super(nome,cpf,telefone);
-        this.crm = crm;
     }
-    private String crm;
+    public Tutor(String nome,String cpf){
+        super(nome,cpf);
+    }
+    private String descricao;
 
     @Override
     public String getDescricao(){
-        return "CRM" + crm;
+        return descricao;
     }
-    }
+
 }
