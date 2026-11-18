@@ -6,9 +6,9 @@ public interface Agendavel {
 
     /**
      * Marca o item para uma data e hora.
-     * @param datahora quando o item vai acontecer
+     * @param dataHora quando o item vai acontecer
      */
-    void agendar(LocalDateTime datahora);
+    void agendar(LocalDateTime dataHora);
 
     /** Desmarca o item da agenda. */
     void cancelar();
