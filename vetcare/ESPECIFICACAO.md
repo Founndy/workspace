@@ -164,7 +164,7 @@ As assinaturas devem bater **exatamente** com o UML da seção 7. Todas as mensa
 - `private String nome`, `private double peso`, `protected final Prontuario prontuario` (slide 7).
 - Construtor `(String nome, double peso)`: valida o nome, faz `this.peso = validarPeso(peso)` e `this.prontuario = new Prontuario()` **[composição: o prontuário nasce e morre com o animal]**.
 - `private double validarPeso(double)`: peso ≤ 0 lança `DadoInvalidoException`. É usado no construtor e em `setPeso`. Comente por que o construtor não chama `setPeso` direto: evita chamar um método sobrescrevível dentro do construtor.
-- `getNome()`, `getPeso()`, `setPeso(double)`, `getProntuario()`.
+- `getNome()`, `setNome(String)` (com a mesma validação do construtor), `getPeso()`, `setPeso(double)`, `getProntuario()`.
 - `public abstract String getEspecie();`
 - `toString()`: `"Rex (Cachorro, 12,5 kg)"`, usando `getEspecie()`.
 - O animal **não** guarda referência ao tutor (a agregação é unidirecional). Explique isso no README.
@@ -359,6 +359,7 @@ class Animal {
   #Prontuario prontuario
   +Animal(String nome, double peso)
   +getNome() String
+  +setNome(String nome) void
   +getPeso() double
   +setPeso(double peso) void
   +getProntuario() Prontuario
