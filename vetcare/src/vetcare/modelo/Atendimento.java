@@ -6,6 +6,7 @@ import vetcare.excecao.OperacaoInvalidaException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public abstract class Atendimento implements Pagavel, Agendavel,Comparable<Atendimento>{
 
@@ -41,6 +42,30 @@ public abstract class Atendimento implements Pagavel, Agendavel,Comparable<Atend
         }
         this.dataHora = dataHora;
         status = StatusAtendimento.AGENDADO;
+    }
+
+    public void agendar(LocalDate dia, LocalTime hora){
+
+        agendar(LocalDateTime.of(dia, hora));
+    }
+
+
+    @Override
+    public void cancelar(){
+        if(status == StatusAtendimento.REALIZADO){
+            throw new OperacaoInvalidaException("Não é possível cancelar um atendimento já realizado.");
+        }
+        if(status == StatusAtendimento.CANCELADO){
+            throw new OperacaoInvalidaException("O atendimento já está cancelado");
+        }
+        status = StatusAtendimento.CANCELADO;
+    }
+
+    public void realizar(){
+        if(status != StatusAtendimento.AGENDADO){
+            throw new OperacaoInvalidaException("Só é possível realizar um atendimento agendado.");
+        }
+        status = StatusAtendimento.REALIZADO;
     }
 
 
